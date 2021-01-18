@@ -111,7 +111,21 @@ optional arguments:
                         max minutes gap between grouped updates, default=2
   -P PATH, --path PATH  alternate log path[s] (separate multiple using ":",
                         must be time sequenced)
+
+Note you can set default starting arguments in ~/.config/pkglog-flags.conf.
 ```
+
+### DEFAULT ARGUMENTS
+
+You can add default arguments to a personal configuration file
+`~/.config/pkglog-flags.conf`. If that file exists then each line of
+arguments in the file will be concatenated and automatically prepended to your
+`pkglog` command line arguments.
+
+This allow you to set default preferred starting arguments to `pkglog`.
+Type `pkglog -h` to see the arguments supported. E.g. `echo "--days 7" >~/.config/pkglog.conf`
+to make `pkglog` only display the last 7 days of
+updates by default.
 
 ### INSTALLATION
 

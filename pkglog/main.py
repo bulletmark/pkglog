@@ -7,6 +7,7 @@ import re
 import argparse
 import importlib
 import fileinput
+import shlex
 from datetime import datetime, date, timedelta
 from importlib.util import spec_from_loader
 from pathlib import Path
@@ -18,6 +19,9 @@ DAYS = 30
 ACTIONS_VER = {'upgraded', 'downgraded'}
 ACTIONS_INSTALL = {'installed', 'removed'}
 ACTIONS = {'reinstalled'} | ACTIONS_VER | ACTIONS_INSTALL
+
+MODDIR = Path(__file__).parent.resolve()
+CNFFILE = f'~/.config/{MODDIR.name}-flags.conf'
 
 queue = []
 
@@ -68,10 +72,9 @@ def main():
     parsers = {}
     order = {}
     priority = 100
-    basedir = Path(__file__).parent.resolve() / 'parsers'
 
     # Load all parsers
-    for index, m in enumerate(basedir.glob('[!_]*.py')):
+    for index, m in enumerate((MODDIR / 'parsers').glob('[!_]*.py')):
         name = m.name[:-3]
         mod = import_path(m)
         parsers[name] = mod
@@ -87,7 +90,8 @@ def main():
         parser = '?'
 
     # Process command line options
-    opt = argparse.ArgumentParser(description=__doc__.strip())
+    opt = argparse.ArgumentParser(description=__doc__.strip(),
+            epilog=f'Note you can set default starting arguments in {CNFFILE}.')
     opt.add_argument('-i', '--installed', action='store_true',
             help='show installed/removed only')
     opt.add_argument('-I', '--installed-only', action='store_true',
@@ -110,7 +114,13 @@ def main():
             'must be time sequenced)'.format(PATHSEP))
     opt.add_argument('package', nargs='?',
             help='specific package name to report')
-    args = opt.parse_args()
+
+    # Merge in default args from user config file. Then parse the
+    # command line.
+    cnffile = Path(CNFFILE).expanduser()
+    cnfargs = shlex.split(cnffile.read_text().strip()) \
+            if cnffile.exists() else []
+    args = opt.parse_args(cnfargs + sys.argv[1:])
 
     if args.parser:
         parser = args.parser
