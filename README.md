@@ -128,17 +128,18 @@ updates by default.
 
 ### INSTALLATION
 
+Arch Linux users can install [pkglog from the
+AUR](https://aur.archlinux.org/packages/pkglog).
 Python 3.7 or later is required. Note [pkglog is on
-PyPI](https://pypi.org/project/pkglog) so you can just type the
-following to install or upgrade:
+PyPI](https://pypi.org/project/pkglog/) so just ensure that
+`python3-pip` and `python3-wheel` are installed then type the following
+to install (or upgrade):
 
 ```
 $ sudo pip3 install -U pkglog
 ```
 
-Arch Linux users can install [pkglog from the
-AUR](https://aur.archlinux.org/packages/pkglog). Alternately, do the
-following to install from the source repository.
+Alternatively, do the following to install from the source repository.
 
 ```sh
 $ git clone http://github.com/bulletmark/pkglog
