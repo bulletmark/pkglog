@@ -122,9 +122,9 @@ arguments in the file will be concatenated and automatically prepended to your
 `pkglog` command line arguments.
 
 This allow you to set default preferred starting arguments to `pkglog`.
-Type `pkglog -h` to see the arguments supported. E.g. `echo "--days 7" >~/.config/pkglog.conf`
-to make `pkglog` only display the last 7 days of
-updates by default.
+Type `pkglog -h` to see the arguments supported.
+E.g. `echo "--days 7" >~/.config/pkglog-flags.conf` to make `pkglog`
+only display the last 7 days of updates by default.
 
 ### INSTALLATION
 
