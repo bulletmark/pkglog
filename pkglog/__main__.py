@@ -36,6 +36,9 @@ def output(args, delim):
     # First loop to extract data and determine longest package name in
     # this transaction set
     for dt, action, pkg, vers in queue:
+        if args.updated_only:
+            if action not in ACTIONS_VER:
+                continue
         if args.installed or args.installed_only:
             if action not in ACTIONS_INSTALL:
                 continue
@@ -92,6 +95,8 @@ def main():
     # Process command line options
     opt = argparse.ArgumentParser(description=__doc__.strip(),
             epilog=f'Note you can set default starting arguments in {CNFFILE}.')
+    opt.add_argument('-u', '--updated-only', action='store_true',
+            help='show updated only')
     opt.add_argument('-i', '--installed', action='store_true',
             help='show installed/removed only')
     opt.add_argument('-I', '--installed-only', action='store_true',
