@@ -16,14 +16,20 @@ TIMEGAP = 2  # mins
 PATHSEP = ':'
 
 DAYS = 30
-ACTIONS_VER = {'upgraded', 'downgraded'}
-ACTIONS_INSTALL = {'installed', 'removed'}
-ACTIONS = {'reinstalled'} | ACTIONS_VER | ACTIONS_INSTALL
+
+ACTIONS = {
+    'installed': (1, 'green'),
+    'removed': (2, 'red'),
+    'upgraded': (3, 'yellow'),
+    'downgraded': (3, 'magenta'),
+    'reinstalled': (4, 'cyan'),
+}
 
 MODDIR = Path(__file__).parent.resolve()
 CNFFILE = f'~/.config/{MODDIR.name}-flags.conf'
 
 queue = []
+console = None
 
 def output(args, delim):
     'Output queued set of package transactions to screen'
@@ -36,19 +42,20 @@ def output(args, delim):
     # First loop to extract data and determine longest package name in
     # this transaction set
     for dt, action, pkg, vers in queue:
+        actcode, color = ACTIONS[action]
         if args.updated_only:
-            if action not in ACTIONS_VER:
+            if actcode != 3:
                 continue
         if args.installed or args.installed_only:
-            if action not in ACTIONS_INSTALL:
+            if actcode > 2:
                 continue
-            if args.installed_only and action == 'removed':
+            if args.installed_only and actcode > 1:
                 continue
         if args.package and pkg != args.package:
             continue
-        if action not in ACTIONS_VER or args.verbose:
+        if actcode != 3 or args.verbose:
             vers += ' ' + action
-        out.append((dt, pkg, vers))
+        out.append((dt, pkg, vers, color))
         if not args.nojustify:
             maxlen = max(maxlen, len(pkg))
 
@@ -57,8 +64,12 @@ def output(args, delim):
             print(delim)
 
         # Now output justified lines to screen
-        for dt, pkg, vers in out:
-            print(f'{dt} {pkg:{maxlen}} {vers}')
+        for dt, pkg, vers, color in out:
+            msg = f'{dt} {pkg:{maxlen}} {vers}'
+            if console:
+                console.print(msg, style=color, highlight=False)
+            else:
+                print(msg)
 
     queue.clear()
 
@@ -72,6 +83,7 @@ def import_path(path):
     return module
 
 def main():
+    global console
     parsers = {}
     order = {}
     priority = 100
@@ -110,6 +122,8 @@ def main():
             help='don\'t right justify version numbers')
     opt.add_argument('-v', '--verbose', action='store_true',
             help='be verbose, describe upgrades/downgrades')
+    opt.add_argument('-c', '--no-color', action='store_true',
+            help='do not color output lines')
     opt.add_argument('-p', '--parser', choices=parsers,
             help=f'log parser type, default={parser}')
     opt.add_argument('-t', '--timegap', type=float, default=TIMEGAP,
@@ -126,6 +140,12 @@ def main():
     cnfargs = shlex.split(cnffile.read_text().strip()) \
             if cnffile.exists() else []
     args = opt.parse_args(cnfargs + sys.argv[1:])
+
+    if args.no_color:
+        console = None
+    else:
+        from rich.console import Console
+        console = Console()
 
     if args.parser:
         parser = args.parser

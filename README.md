@@ -2,8 +2,8 @@
 
 This is a Linux command line utility to output a list of packages
 installed, removed, upgraded, or downgraded. It should be able to parse
-the package log formats used by the common Linux distributions. Example output
-is:
+the package log formats used by the common Linux distributions. Example
+output is:
 
     $ pkglog
     ---------------------------------------------------------------------------------
@@ -65,6 +65,10 @@ the `tree` package has been installed since the last boot.
 4. You can specify a package name and only updates to that package are
 shown. See the USAGE section below.
 
+5. Most terminals show this output in color. Five different colors are
+used to identify _installed_, _removed_, _upgraded_, _downgraded_, or
+_reinstalled_ lines. You can choose to disable colored output.
+
 See the latest documentation and code at https://github.com/bulletmark/pkglog.
 
 ### LOG FILE FORMATS
@@ -86,8 +90,8 @@ creating a new parser is easy. Simply drop the parser file in the
 ### USAGE
 
 ```
-usage: pkglog [-h] [-i] [-I] [-d DAYS] [-a] [-j] [-v] [-p {pacman,apt,dnf}]
-              [-t TIMEGAP] [-P PATH]
+usage: pkglog [-h] [-u] [-i] [-I] [-d DAYS] [-a] [-j] [-v] [-c]
+              [-p {pacman,apt,dnf}] [-t TIMEGAP] [-P PATH]
               [package]
 
 Reports log of package updates.
@@ -97,6 +101,7 @@ positional arguments:
 
 optional arguments:
   -h, --help            show this help message and exit
+  -u, --updated-only    show updated only
   -i, --installed       show installed/removed only
   -I, --installed-only  show installed only
   -d DAYS, --days DAYS  show all packages only from given days ago (or YYYY-
@@ -104,6 +109,7 @@ optional arguments:
   -a, --alldays         show all packages for all days (same as "-days=-1")
   -j, --nojustify       don't right justify version numbers
   -v, --verbose         be verbose, describe upgrades/downgrades
+  -c, --no-color        do not color output lines
   -p {pacman,apt,dnf}, --parser {pacman,apt,dnf}
                         log parser type, default=pacman
   -t TIMEGAP, --timegap TIMEGAP
@@ -118,8 +124,8 @@ Note you can set default starting arguments in ~/.config/pkglog-flags.conf.
 
 You can add default arguments to a personal configuration file
 `~/.config/pkglog-flags.conf`. If that file exists then each line of
-arguments in the file will be concatenated and automatically prepended to your
-`pkglog` command line arguments.
+arguments in the file will be concatenated and automatically prepended
+to your `pkglog` command line arguments.
 
 This allow you to set default preferred starting arguments to `pkglog`.
 Type `pkglog -h` to see the arguments supported.
@@ -129,11 +135,14 @@ only display the last 7 days of updates by default.
 ### INSTALLATION
 
 Arch Linux users can install [pkglog from the
-AUR](https://aur.archlinux.org/packages/pkglog).
-Python 3.7 or later is required. Note [pkglog is on
-PyPI](https://pypi.org/project/pkglog/) so just ensure that
-`python3-pip` and `python3-wheel` are installed then type the following
-to install (or upgrade):
+AUR](https://aur.archlinux.org/packages/pkglog). Python 3.7 or later is
+required. The [`python-rich`](https://pypi.org/project/rich/) package is
+required if you want colored output (which is the default unless you
+specify the `-c/--no-color` option).
+
+Note [pkglog is on PyPI](https://pypi.org/project/pkglog/) so just
+ensure that `python3-pip` and `python3-wheel` are installed then type
+the following to install (or upgrade):
 
 ```
 $ sudo pip3 install -U pkglog
