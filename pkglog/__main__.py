@@ -8,6 +8,7 @@ import argparse
 import importlib
 import fileinput
 import shlex
+import fnmatch
 from datetime import datetime, date, timedelta
 from importlib.util import spec_from_loader
 from pathlib import Path
@@ -51,8 +52,12 @@ def output(args, delim):
                 continue
             if args.installed_only and actcode > 1:
                 continue
-        if args.package and pkg != args.package:
-            continue
+        if args.package:
+            if args.regex:
+                if not args.regex.match(pkg):
+                    continue
+            elif pkg != args.package:
+                continue
         if actcode != 3 or args.verbose:
             vers += ' ' + action
         out.append((dt, pkg, vers, color))
@@ -60,7 +65,7 @@ def output(args, delim):
             maxlen = max(maxlen, len(pkg))
 
     if out:
-        if delim:
+        if delim is not None:
             print(delim)
 
         # Now output justified lines to screen
@@ -131,6 +136,11 @@ def main():
     opt.add_argument('-P', '--path',
             help='alternate log path[s] (separate multiple using "{}", '
             'must be time sequenced)'.format(PATHSEP))
+    grp = opt.add_mutually_exclusive_group()
+    grp.add_argument('-g', '--glob', action='store_true',
+            help='given package name is glob pattern to match')
+    grp.add_argument('-r', '--regex', action='store_true',
+            help='given package name is regular expression to match')
     opt.add_argument('package', nargs='?',
             help='specific package name to report')
 
@@ -141,14 +151,22 @@ def main():
             if cnffile.exists() else []
     args = opt.parse_args(cnfargs + sys.argv[1:])
 
-    if args.no_color:
-        console = None
-    else:
+    if not args.no_color:
         from rich.console import Console
         console = Console()
 
     if args.parser:
         parser = args.parser
+
+    if args.package:
+        if args.glob:
+            args.package = fnmatch.translate(args.package)
+            args.regex = True
+
+        if args.regex:
+            args.regex = re.compile(args.package)
+    else:
+        args.regex = None
 
     logmod = parsers.get(parser)
     if not logmod:
@@ -157,7 +175,7 @@ def main():
     defpath = Path(logmod.logfile)
 
     delim = 80 * '-' if not args.package \
-            and not (args.installed or args.installed_only) else ''
+            and not (args.installed or args.installed_only) else None
 
     timegap = timedelta(minutes=args.timegap)
 
@@ -176,7 +194,8 @@ def main():
         upsecs = float(Path('/proc/uptime').read_text().split()[0])
         timeboot = datetime.now() - timedelta(seconds=upsecs)
         timestr = timeboot.isoformat(' ', 'seconds')
-        dline = delim + '\n' if delim else ''
+        dline = '' if delim is None else (delim + '\n')
+
         bootstr = f'{dline}{timestr} ### LAST SYSTEM BOOT ###'
 
     start_date = date.today() - timedelta(days=days) if days >= 0 and \

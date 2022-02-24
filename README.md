@@ -76,10 +76,11 @@ See the latest documentation and code at https://github.com/bulletmark/pkglog.
 Parsers for the following log formats currently exist. The appropriate
 parser for you system is normally automatically determined.
 Alternatively, you can choose the log directory[s], file[s], and/or
-parser explicitly. A very simple parser plugin architecture is used, so
-creating a new parser is easy. Simply drop the parser file in the
-`parsers/` directory and the program will automatically use it. See the
-[current parsers](pkglog/parsers) for example code.
+parser explicitly using the `-p/--parser` option. A very simple parser
+plugin architecture is used, so creating a new parser is easy. Simply
+drop the parser file in the `parsers/` directory and the program will
+automatically use it. See the [current parsers](pkglog/parsers) for
+example code.
 
 |Log Parser|Default Path           |Systems            |
 |----------|-----------------------|-------------------|
@@ -91,7 +92,7 @@ creating a new parser is easy. Simply drop the parser file in the
 
 ```
 usage: pkglog [-h] [-u] [-i] [-I] [-d DAYS] [-a] [-j] [-v] [-c]
-              [-p {pacman,apt,dnf}] [-t TIMEGAP] [-P PATH]
+              [-p {pacman,apt,dnf}] [-t TIMEGAP] [-P PATH] [-g | -r]
               [package]
 
 Reports log of package updates.
@@ -99,7 +100,7 @@ Reports log of package updates.
 positional arguments:
   package               specific package name to report
 
-optional arguments:
+options:
   -h, --help            show this help message and exit
   -u, --updated-only    show updated only
   -i, --installed       show installed/removed only
@@ -116,6 +117,8 @@ optional arguments:
                         max minutes gap between grouped updates, default=2
   -P PATH, --path PATH  alternate log path[s] (separate multiple using ":",
                         must be time sequenced)
+  -g, --glob            given package name is glob pattern to match
+  -r, --regex           given package name is regular expression to match
 
 Note you can set default starting arguments in ~/.config/pkglog-flags.conf.
 ```
@@ -130,7 +133,8 @@ to your `pkglog` command line arguments.
 This allow you to set default preferred starting arguments to `pkglog`.
 Type `pkglog -h` to see the arguments supported.
 E.g. `echo "--days 7" >~/.config/pkglog-flags.conf` to make `pkglog`
-only display the last 7 days of updates by default.
+only display the last 7 days of updates by default. This is also useful
+to set your default parser using `-p/--parser`.
 
 ### INSTALLATION
 
