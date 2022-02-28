@@ -5,12 +5,11 @@
 import sys
 import re
 import argparse
-import importlib
+from importlib import util, machinery
 import fileinput
 import shlex
 import fnmatch
 from datetime import datetime, date, timedelta
-from importlib.util import spec_from_loader
 from pathlib import Path
 
 TIMEGAP = 2  # mins
@@ -81,9 +80,9 @@ def output(args, delim):
 def import_path(path):
     'Import given module path'
     modname = path.stem.replace('-', '_')
-    spec = spec_from_loader(modname,
-            importlib.machinery.SourceFileLoader(modname, str(path)))
-    module = importlib.util.module_from_spec(spec)
+    spec = util.spec_from_loader(modname,
+            machinery.SourceFileLoader(modname, str(path)))
+    module = util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
 
