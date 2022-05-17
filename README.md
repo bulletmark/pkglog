@@ -134,7 +134,8 @@ This allow you to set default preferred starting arguments to `pkglog`.
 Type `pkglog -h` to see the arguments supported.
 E.g. `echo "--days 7" >~/.config/pkglog-flags.conf` to make `pkglog`
 only display the last 7 days of updates by default. This is also useful
-to set your default parser using `-p/--parser`.
+to set your parser explicitly using `-p/--parser` (e.g. if the default
+parser is not automatically determined correctly on your system).
 
 ### INSTALLATION
 
