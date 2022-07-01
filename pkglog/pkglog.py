@@ -26,56 +26,74 @@ ACTIONS = {
 }
 
 MODDIR = Path(__file__).parent.resolve()
-CNFFILE = f'~/.config/{MODDIR.name}-flags.conf'
+CNFFILE = Path(f'~/.config/{MODDIR.name}-flags.conf')
 
-queue = []
-console = None
+class Queue:
+    queue = []
+    installed = {}
+    console = None
 
-def output(args, delim):
-    'Output queued set of package transactions to screen'
-    if not queue:
-        return
+    @classmethod
+    def output(cls, args, delim):
+        'Output queued set of package transactions to screen'
+        if not cls.queue:
+            return
 
-    out = []
-    maxlen = 1
+        out = []
+        maxlen = 1
 
-    # First loop to extract data and determine longest package name in
-    # this transaction set
-    for dt, action, pkg, vers in queue:
-        actcode, color = ACTIONS[action]
-        if args.updated_only:
-            if actcode != 3:
-                continue
-        if args.installed or args.installed_only:
-            if actcode > 2:
-                continue
-            if args.installed_only and actcode > 1:
-                continue
-        if args.package:
-            if args.regex:
-                if not args.regex.match(pkg):
+        # First loop to extract data and determine longest package name in
+        # this transaction set
+        for dt, action, pkg, vers in cls.queue:
+            actcode, color = ACTIONS[action]
+            if args.updated_only:
+                if actcode != 3:
                     continue
-            elif pkg != args.package:
-                continue
-        if actcode != 3 or args.verbose:
-            vers += ' ' + action
-        out.append((dt, pkg, vers, color))
-        if not args.nojustify:
-            maxlen = max(maxlen, len(pkg))
+            if args.installed or args.installed_only:
+                if actcode > 2:
+                    continue
+                if args.installed_only and actcode > 1:
+                    continue
+            if args.package:
+                if args.regex:
+                    if not args.regex.match(pkg):
+                        continue
+                elif pkg != args.package:
+                    continue
+            if args.installed_net:
+                pkgdt = cls.installed.get(pkg)
+                if not pkgdt or dt < pkgdt:
+                    continue
+            if actcode != 3 or args.verbose:
+                vers += ' ' + action
+            out.append((dt, pkg, vers, color))
+            if not args.nojustify:
+                maxlen = max(maxlen, len(pkg))
 
-    if out:
-        if delim is not None:
-            print(delim)
+        if out:
+            if delim is not None:
+                print(delim)
 
-        # Now output justified lines to screen
-        for dt, pkg, vers, color in out:
-            msg = f'{dt} {pkg:{maxlen}} {vers}'
-            if console:
-                console.print(msg, style=color, highlight=False)
-            else:
-                print(msg)
+            # Now output justified lines to screen
+            for dt, pkg, vers, color in out:
+                msg = f'{dt} {pkg:{maxlen}} {vers}'
+                if cls.console:
+                    cls.console.print(msg, style=color, highlight=False)
+                else:
+                    print(msg)
 
-    queue.clear()
+        cls.queue.clear()
+
+    @classmethod
+    def append(cls, dt, action, pkg, vers):
+        'Append this package + action to the internal queue'
+        actcode, _ = ACTIONS[action]
+        if actcode == 1:
+            cls.installed[pkg] = dt
+        elif actcode == 2 and pkg in cls.installed:
+            del cls.installed[pkg]
+
+        cls.queue.append((dt, action, pkg, vers))
 
 def import_path(path):
     'Import given module path'
@@ -87,7 +105,6 @@ def import_path(path):
     return module
 
 def main():
-    global console
     parsers = {}
     order = {}
     priority = 100
@@ -117,6 +134,8 @@ def main():
             help='show installed/removed only')
     opt.add_argument('-I', '--installed-only', action='store_true',
             help='show installed only')
+    opt.add_argument('-n', '--installed-net', action='store_true',
+            help='show net installed only')
     opt.add_argument('-d', '--days',
             help='show all packages only from given days ago '
             f'(or YYYY-MM-DD), default={DAYS}, -1=all')
@@ -145,14 +164,18 @@ def main():
 
     # Merge in default args from user config file. Then parse the
     # command line.
-    cnffile = Path(CNFFILE).expanduser()
-    cnfargs = shlex.split(cnffile.read_text().strip()) \
-            if cnffile.exists() else []
-    args = opt.parse_args(cnfargs + sys.argv[1:])
+    cnflines = ''
+    cnffile = CNFFILE.expanduser()
+    if cnffile.exists():
+        with cnffile.open() as fp:
+            cnflines = [re.sub(r'#.*$', '', line).strip() for line in fp]
+        cnflines = ' '.join(cnflines).strip()
+
+    args = opt.parse_args(shlex.split(cnflines) + sys.argv[1:])
 
     if not args.no_color:
         from rich.console import Console
-        console = Console()
+        Queue.console = Console()
 
     if args.parser:
         parser = args.parser
@@ -166,6 +189,9 @@ def main():
             args.regex = re.compile(args.package)
     else:
         args.regex = None
+
+    if args.installed_net:
+        args.installed = True
 
     logmod = parsers.get(parser)
     if not logmod:
@@ -229,24 +255,24 @@ def main():
                 continue
 
             if bootstr and dt > timeboot:
-                output(args, delim)
+                Queue.output(args, delim)
                 print(bootstr)
                 bootstr = None
 
             if start_date and dt.date() < start_date:
                 continue
 
-            if dt - dt_out > timegap:
-                output(args, delim)
+            if dt - dt_out > timegap and not args.installed_net:
+                Queue.output(args, delim)
 
             dt_out = dt
 
             for fields in logmod.get_packages():
                 if fields and len(fields) == 3 and fields[0] in ACTIONS:
-                    queue.append((dt, *fields))
+                    Queue.append(dt, *fields)
 
     # Flush any remaining queued output
-    output(args, delim)
+    Queue.output(args, delim)
     if bootstr:
         print(bootstr)
 

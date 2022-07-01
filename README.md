@@ -50,24 +50,30 @@ output is:
     2021-01-18 07:57:48 tree 1.8.0-2 installed
 
 1. By default, only package updates over the last 30 days are shown. You
-can choose to specify a specific date, or number of days back, or
-for all time.
+   can choose to specify a specific date, or number of days back, or for
+   all time.
 
 2. Updates are grouped together by time (all updates with less than a 2
-minute gap between any of them) so you can distinguish the group of
-packages updated each time you did a system update.
+   minute gap between any of them) so you can distinguish the group of
+   packages updated each time you did a system update.
 
 3. The `LAST SYSTEM BOOT` line shows you which packages have been
-updated since the last boot, e.g. if the linux kernel package was
-since updated you may decide to reboot asap. In the above example, only
-the `tree` package has been installed since the last boot.
+   updated since the last boot, e.g. if the linux kernel package was
+   since updated you may decide to reboot asap. In the above example,
+   only the `tree` package has been installed since the last boot.
 
 4. You can specify a package name and only updates to that package are
-shown. See the USAGE section below.
+   shown. See the USAGE section below.
 
 5. Most terminals show this output in color. Five different colors are
-used to identify _installed_, _removed_, _upgraded_, _downgraded_, or
-_reinstalled_ lines. You can choose to disable colored output.
+   used to identify _installed_, _removed_, _upgraded_, _downgraded_, or
+   _reinstalled_ lines. You can choose to disable colored output.
+
+6. You can use the `-n/--installed-net` option to see a list of all
+   packages currently installed and their date of installation. E.g. use
+   this option after you have installed and removed a heap of trial
+   packages and you want to easily see if you have actually removed all
+   of them.
 
 See the latest documentation and code at https://github.com/bulletmark/pkglog.
 
@@ -91,7 +97,7 @@ example code.
 ### USAGE
 
 ```
-usage: pkglog [-h] [-u] [-i] [-I] [-d DAYS] [-a] [-j] [-v] [-c]
+usage: pkglog [-h] [-u] [-i] [-I] [-n] [-d DAYS] [-a] [-j] [-v] [-c]
               [-p {pacman,apt,dnf}] [-t TIMEGAP] [-P PATH] [-g | -r]
               [package]
 
@@ -105,6 +111,7 @@ options:
   -u, --updated-only    show updated only
   -i, --installed       show installed/removed only
   -I, --installed-only  show installed only
+  -n, --installed-net   show net installed only
   -d DAYS, --days DAYS  show all packages only from given days ago (or YYYY-
                         MM-DD), default=30, -1=all
   -a, --alldays         show all packages for all days (same as "-days=-1")
