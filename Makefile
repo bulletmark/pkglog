@@ -15,17 +15,16 @@
 NAME = $(shell basename $(CURDIR))
 
 DOC = README.md
-DOCOUT = $(DOC:.md=.html)
 
 all:
 	@echo "Type sudo make install|uninstall"
 	@echo "or make sdist|upload|doc|check|clean"
 
 install:
-	pip3 install .
+	pip3 install -U --root-user-action=ignore .
 
 uninstall:
-	pip3 uninstall $(NAME)
+	pip3 uninstall --root-user-action=ignore $(NAME)
 
 sdist:
 	rm -rf dist
@@ -34,16 +33,11 @@ sdist:
 upload: sdist
 	twine3 upload --skip-existing dist/*
 
-doc:	$(DOCOUT)
-
-$(DOCOUT): $(DOC)
-	markdown $< >$@
-
 check:
 	flake8 $(NAME)/*.py $(NAME)/*/*.py setup.py
-	vermin -i -v --no-tips $(NAME)/*.py $(NAME)/*/*.py setup.py
+	vermin -i --no-tips $(NAME)/*.py $(NAME)/*/*.py setup.py
 	python3 setup.py check
 
 clean:
-	@rm -vrf $(DOCOUT) *.egg-info build/ dist/ __pycache__/ \
+	@rm -vrf *.egg-info build/ dist/ __pycache__/ \
 	    */__pycache__ */*/__pycache__
