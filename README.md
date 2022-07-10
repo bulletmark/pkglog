@@ -1,4 +1,6 @@
 ## PKGLOG - Linux utility to output list of changed packages
+[![PyPi](https://img.shields.io/pypi/v/pkglog)](https://pypi.org/project/pkglog/)
+[![AUR](https://img.shields.io/aur/version/pkglog)](https://aur.archlinux.org/packages/pkglog/)
 
 This is a Linux command line utility to output a list of packages
 installed, removed, upgraded, or downgraded. It should be able to parse
