@@ -2,6 +2,7 @@
 'Reports log of package updates.'
 # Author: Mark Blakeney, 2016->2021.
 
+import os
 import sys
 import re
 import argparse
@@ -26,7 +27,8 @@ ACTIONS = {
 }
 
 MODDIR = Path(__file__).parent.resolve()
-CNFFILE = Path(f'~/.config/{MODDIR.name}-flags.conf')
+CNFFILE = Path(os.getenv('XDG_CONFIG_HOME', '~/.config'),
+        f'{MODDIR.name}-flags.conf')
 
 class Queue:
     queue = []
