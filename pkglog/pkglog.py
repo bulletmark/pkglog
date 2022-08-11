@@ -154,8 +154,8 @@ def main():
     opt.add_argument('-t', '--timegap', type=float, default=TIMEGAP,
             help=f'max minutes gap between grouped updates, default={TIMEGAP}')
     opt.add_argument('-P', '--path',
-            help='alternate log path[s] (separate multiple using "{}", '
-            'must be time sequenced)'.format(PATHSEP))
+            help='alternate log path[s] '
+            f'(separate multiple using "{PATHSEP}", must be time sequenced)')
     grp = opt.add_mutually_exclusive_group()
     grp.add_argument('-g', '--glob', action='store_true',
             help='given package name is glob pattern to match')
