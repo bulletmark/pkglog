@@ -176,8 +176,12 @@ def main():
     args = opt.parse_args(shlex.split(cnflines) + sys.argv[1:])
 
     if not args.no_color:
-        from rich.console import Console
-        Queue.console = Console()
+        try:
+            from rich.console import Console
+        except Exception:
+            args.no_color = True
+        else:
+            Queue.console = Console()
 
     if args.parser:
         parser = args.parser
