@@ -129,7 +129,7 @@ def main():
 
     # Process command line options
     opt = argparse.ArgumentParser(description=__doc__.strip(),
-            epilog=f'Note you can set default starting arguments in {CNFFILE}.')
+            epilog=f'Note you can set default starting options in {CNFFILE}.')
     opt.add_argument('-u', '--updated-only', action='store_true',
             help='show updated only')
     opt.add_argument('-i', '--installed', action='store_true',
@@ -164,7 +164,7 @@ def main():
     opt.add_argument('package', nargs='?',
             help='specific package name to report')
 
-    # Merge in default args from user config file. Then parse the
+    # Merge in default options from user config file. Then parse the
     # command line.
     cnflines = ''
     cnffile = CNFFILE.expanduser()

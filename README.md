@@ -84,7 +84,7 @@ See the latest documentation and code at https://github.com/bulletmark/pkglog.
 
 ## COLORED OUTPUT LINES
 
-|Package Action|Color
+|Package Action|Line Text Color
 |--------------|-----
 |Installed     |green
 |Removed       |red
@@ -93,7 +93,7 @@ See the latest documentation and code at https://github.com/bulletmark/pkglog.
 |Reinstalled   |cyan
 
 You can use a command line option to disable colored output, or set it
-as a default option.
+as a [default option](#default-options).
 
 ## LOG FILE FORMATS
 
@@ -147,18 +147,18 @@ options:
   -g, --glob            given package name is glob pattern to match
   -r, --regex           given package name is regular expression to match
 
-Note you can set default starting arguments in ~/.config/pkglog-flags.conf.
+Note you can set default starting options in ~/.config/pkglog-flags.conf.
 ```
 
-## DEFAULT ARGUMENTS
+## DEFAULT OPTIONS
 
-You can add default arguments to a personal configuration file
+You can add default options to a personal configuration file
 `~/.config/pkglog-flags.conf`. If that file exists then each line of
-arguments in the file will be concatenated and automatically prepended
-to your `pkglog` command line arguments.
+options in the file will be concatenated and automatically prepended
+to your `pkglog` command line options.
 
-This allow you to set default preferred starting arguments to `pkglog`.
-Type `pkglog -h` to see the arguments supported.
+This allow you to set default preferred starting options to `pkglog`.
+Type `pkglog -h` to see the options supported.
 E.g. `echo "--days 7" >~/.config/pkglog-flags.conf` to make `pkglog`
 only display the last 7 days of updates by default. This is also useful
 to set your parser explicitly using `-p/--parser` (e.g. if the default
