@@ -1,6 +1,8 @@
 README.html
 build/
 dist/
+.idea/
+.vscode/
 *.egg-info/
 *.pyc
 __pycache__/
