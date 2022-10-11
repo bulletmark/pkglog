@@ -19,14 +19,16 @@ class g:
     vers = {}
     pkgs = None
 
-def get_date(line):
+def get_time(line):
     if ' SUBDEBUG ' not in line:
         return None
     dtstr, _, action, rest = line.split(maxsplit=3)
     index = dtstr.find('+')
-    if index >= 0:
+    if index < 0:
+        dtstr = dtstr.replace('Z', '+00:00')
+    else:
         dtstr = dtstr[:index + 3] + ':' + dtstr[index + 3:]
-    dtstr = dtstr.replace('Z', '+00:00')
+
     dt = datetime.fromisoformat(dtstr).astimezone().replace(tzinfo=None)
     action = action[:-1]
     pkg = re.sub(r'\.[^.]+$', '', rest)

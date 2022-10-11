@@ -8,14 +8,20 @@ priority = 1
 class g:
     line = None
 
-def get_date(line):
+def get_time(line):
     if line[0] != '[' or ']' not in line:
         return None
 
     ind = line.index(']')
-    dt = datetime.fromisoformat(line[1:ind][:19])
+    dts = line[1:ind]
+    if len(dts) != 24:
+        return None
+
     g.line = line[ind + 2:]
-    return dt
+
+    # Add missing ":" in timezone which fromisoformat() requires
+    dt = datetime.fromisoformat(f'{dts[:22]}:{dts[22:]}')
+    return dt.astimezone().replace(tzinfo=None)
 
 def get_packages():
     try:

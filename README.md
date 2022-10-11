@@ -132,9 +132,10 @@ options:
   -i, --installed       show installed/removed only
   -I, --installed-only  show installed only
   -n, --installed-net   show net installed only
-  -d DAYS, --days DAYS  show all packages only from given days ago (or YYYY-
-                        MM-DD), default=30, -1=all
-  -a, --alldays         show all packages for all days (same as "-days=-1")
+  -d DAYS, --days DAYS  show all packages only from given number of days ago,
+                        or from given YYYY-MM-DD[?HH:MM[:SS]],
+                        default=30(days), 0=today, -1=all
+  -a, --alldays         show all packages for all days (same as "--days=-1")
   -j, --nojustify       don't right justify version numbers
   -v, --verbose         be verbose, describe upgrades/downgrades
   -c, --no-color        do not color output lines

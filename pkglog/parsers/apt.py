@@ -17,7 +17,7 @@ class g:
     action = None
     line = None
 
-def get_date(line):
+def get_time(line):
     if line.startswith('Start-Date:'):
         g.action = None
     elif line.startswith('End-Date:'):

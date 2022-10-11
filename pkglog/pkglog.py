@@ -10,7 +10,7 @@ import fileinput
 import shlex
 import fnmatch
 from importlib import util, machinery
-from datetime import datetime, date, timedelta
+from datetime import datetime, date, time, timedelta
 from pathlib import Path
 
 TIMEGAP = 2  # mins
@@ -118,6 +118,29 @@ def import_path(path):
     spec.loader.exec_module(module)
     return module
 
+def compute_start_time(args):
+    'Compute start time from when to output log'
+    start_time = None
+    days = -1
+    if not args.alldays:
+        if args.days:
+            try:
+                days = int(args.days)
+            except Exception:
+                try:
+                    start_time = datetime.fromisoformat(args.days)
+                except Exception:
+                    sys.exit(f'ERROR: Can not parse days value "{args.days}".')
+
+        elif not args.package:
+            days = DAYS
+
+    if days >= 0:
+        day = date.today() - timedelta(days=days)
+        start_time = datetime.combine(day, time.min)
+
+    return start_time
+
 def main():
     parsers = {}
     order = {}
@@ -151,10 +174,11 @@ def main():
     opt.add_argument('-n', '--installed-net', action='store_true',
             help='show net installed only')
     opt.add_argument('-d', '--days',
-            help='show all packages only from given days ago '
-            f'(or YYYY-MM-DD), default={DAYS}, -1=all')
+            help='show all packages only from given number of days ago, '
+            f'or from given YYYY-MM-DD[?HH:MM[:SS]], default={DAYS}(days), '
+            '0=today, -1=all')
     opt.add_argument('-a', '--alldays', action='store_true',
-            help='show all packages for all days (same as "-days=-1")')
+            help='show all packages for all days (same as "--days=-1")')
     opt.add_argument('-j', '--nojustify', action='store_true',
             help='don\'t right justify version numbers')
     opt.add_argument('-v', '--verbose', action='store_true',
@@ -221,14 +245,8 @@ def main():
         Queue.delim = 80 * '-'
 
     timegap = timedelta(minutes=args.timegap)
-
-    if args.days:
-        if args.days.isdigit():
-            days = int(args.days)
-        else:
-            days = (date.today() - date.fromisoformat(args.days)).days
-    else:
-        days = -1 if args.package else DAYS
+    dt_out = datetime.max
+    start_time = compute_start_time(args) or datetime.min
 
     if not args.package:
         # Get last boot time
@@ -236,11 +254,6 @@ def main():
         Queue.boottime = datetime.now() - timedelta(seconds=upsecs)
         timestr = Queue.boottime.isoformat(' ', 'seconds')
         Queue.bootstr = f'{timestr} ### LAST SYSTEM BOOT ###'
-
-    start_date = date.today() - timedelta(days=days) if days >= 0 and \
-            not args.alldays else None
-
-    dt_out = datetime.max
 
     if args.path:
         pathlist = [Path(p) for p in args.path.split(PATHSEP)]
@@ -264,11 +277,11 @@ def main():
                 openhook=fileinput.hook_compressed):
             line = lineb if isinstance(lineb, str) else lineb.decode()
 
-            dt = logmod.get_date(line.strip())
+            dt = logmod.get_time(line.strip())
             if not dt:
                 continue
 
-            if start_date and dt.date() < start_date:
+            if dt < start_time:
                 continue
 
             if dt - dt_out > timegap and not args.installed_net:
