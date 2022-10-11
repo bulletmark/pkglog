@@ -114,12 +114,12 @@ example code.
 
 ## USAGE
 
-Type `pkglog -h` to view the following usage summary:
+Type `pkglog -h` to view the usage summary:
 
 ```
 usage: pkglog [-h] [-u] [-i] [-I] [-n] [-d DAYS] [-a] [-j] [-v] [-c]
-                 [-p {pacman,apt,dnf}] [-t TIMEGAP] [-P PATH] [-g | -r]
-                 [package]
+                   [-p {pacman,apt,dnf}] [-t TIMEGAP] [-P PATH] [-g | -r]
+                   [package]
 
 Reports log of package updates.
 

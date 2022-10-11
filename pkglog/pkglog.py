@@ -6,10 +6,10 @@ import os
 import sys
 import re
 import argparse
-from importlib import util, machinery
 import fileinput
 import shlex
 import fnmatch
+from importlib import util, machinery
 from datetime import datetime, date, timedelta
 from pathlib import Path
 
@@ -34,9 +34,23 @@ class Queue:
     queue = []
     installed = {}
     console = None
+    boottime = None
+    bootstr = None
+    delim = None
 
     @classmethod
-    def output(cls, args, delim):
+    def print(cls, color, *msg):
+        'Output given message'
+        for m in msg:
+            if m:
+                if cls.console:
+                    cls.console.print(m, style=(color or 'white'),
+                                      highlight=False)
+                else:
+                    print(m)
+
+    @classmethod
+    def output(cls, args):
         'Output queued set of package transactions to screen'
         if not cls.queue:
             return
@@ -72,17 +86,15 @@ class Queue:
             if not args.nojustify:
                 maxlen = max(maxlen, len(pkg))
 
-        if out:
-            if delim is not None:
-                print(delim)
+        # Now output justified lines to screen
+        for num, (dt, pkg, vers, color) in enumerate(out):
+            if cls.bootstr and dt > cls.boottime:
+                cls.print(None, cls.delim, cls.bootstr, cls.delim)
+                cls.bootstr = None
+            elif num == 0:
+                cls.print(None, cls.delim)
 
-            # Now output justified lines to screen
-            for dt, pkg, vers, color in out:
-                msg = f'{dt} {pkg:{maxlen}} {vers}'
-                if cls.console:
-                    cls.console.print(msg, style=color, highlight=False)
-                else:
-                    print(msg)
+            cls.print(color, f'{dt} {pkg:{maxlen}} {vers}')
 
         cls.queue.clear()
 
@@ -92,8 +104,8 @@ class Queue:
         actcode, _ = ACTIONS[action]
         if actcode == 1:
             cls.installed[pkg] = dt
-        elif actcode == 2 and pkg in cls.installed:
-            del cls.installed[pkg]
+        elif actcode == 2:
+            cls.installed.pop(pkg, None)
 
         cls.queue.append((dt, action, pkg, vers))
 
@@ -205,8 +217,8 @@ def main():
 
     defpath = Path(logmod.logfile)
 
-    delim = 80 * '-' if not args.package \
-            and not (args.installed or args.installed_only) else None
+    if not args.package and not (args.installed or args.installed_only):
+        Queue.delim = 80 * '-'
 
     timegap = timedelta(minutes=args.timegap)
 
@@ -218,16 +230,12 @@ def main():
     else:
         days = -1 if args.package else DAYS
 
-    if args.package:
-        bootstr = None
-    else:
+    if not args.package:
         # Get last boot time
         upsecs = float(Path('/proc/uptime').read_text().split()[0])
-        timeboot = datetime.now() - timedelta(seconds=upsecs)
-        timestr = timeboot.isoformat(' ', 'seconds')
-        dline = '' if delim is None else (delim + '\n')
-
-        bootstr = f'{dline}{timestr} ### LAST SYSTEM BOOT ###'
+        Queue.boottime = datetime.now() - timedelta(seconds=upsecs)
+        timestr = Queue.boottime.isoformat(' ', 'seconds')
+        Queue.bootstr = f'{timestr} ### LAST SYSTEM BOOT ###'
 
     start_date = date.today() - timedelta(days=days) if days >= 0 and \
             not args.alldays else None
@@ -260,16 +268,11 @@ def main():
             if not dt:
                 continue
 
-            if bootstr and dt > timeboot:
-                Queue.output(args, delim)
-                print(bootstr)
-                bootstr = None
-
             if start_date and dt.date() < start_date:
                 continue
 
             if dt - dt_out > timegap and not args.installed_net:
-                Queue.output(args, delim)
+                Queue.output(args)
 
             dt_out = dt
 
@@ -278,9 +281,9 @@ def main():
                     Queue.append(dt, *fields)
 
     # Flush any remaining queued output
-    Queue.output(args, delim)
-    if bootstr:
-        print(bootstr)
+    Queue.output(args)
+    if Queue.bootstr:
+        Queue.print(None, Queue.delim, Queue.bootstr)
 
 if __name__ == '__main__':
     main()
