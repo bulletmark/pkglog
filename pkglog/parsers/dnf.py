@@ -23,13 +23,6 @@ def get_time(line):
     if ' SUBDEBUG ' not in line:
         return None
     dtstr, _, action, rest = line.split(maxsplit=3)
-    index = dtstr.find('+')
-    if index < 0:
-        dtstr = dtstr.replace('Z', '+00:00')
-    else:
-        dtstr = dtstr[:index + 3] + ':' + dtstr[index + 3:]
-
-    dt = datetime.fromisoformat(dtstr).astimezone().replace(tzinfo=None)
     action = action[:-1]
     pkg = re.sub(r'\.[^.]+$', '', rest)
     m = re.match(r'^(.+?)-(\d.*)$', pkg)
@@ -44,7 +37,14 @@ def get_time(line):
         vers = vers + ' -> ' + g.vers.get(pkg, '?')
 
     g.pkgs = (action, pkg, vers)
-    return dt
+
+    index = dtstr.find('+')
+    if index < 0:
+        dtstr = dtstr.replace('Z', '+00:00')
+    else:
+        dtstr = dtstr[:index + 3] + ':' + dtstr[index + 3:]
+
+    return datetime.fromisoformat(dtstr).astimezone().replace(tzinfo=None)
 
 def get_packages():
     yield g.pkgs

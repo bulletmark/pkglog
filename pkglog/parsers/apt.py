@@ -18,10 +18,11 @@ class g:
     line = None
 
 def get_time(line):
+    if line.startswith('End-Date:'):
+        return datetime.fromisoformat(line[10:].replace('  ', ' '))
+
     if line.startswith('Start-Date:'):
         g.action = None
-    elif line.startswith('End-Date:'):
-        return datetime.fromisoformat(line[10:].replace('  ', ' '))
     else:
         for act in ACTIONS:
             if line.startswith(f'{act}:'):
