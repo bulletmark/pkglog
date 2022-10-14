@@ -276,8 +276,11 @@ def main():
         for lineb in fileinput.input(filelist,
                 openhook=fileinput.hook_compressed):
             line = lineb if isinstance(lineb, str) else lineb.decode()
+            line = line.strip()
+            if not line:
+                continue
 
-            dt = logmod.get_time(line.strip())
+            dt = logmod.get_time(line)
             if not dt:
                 continue
 

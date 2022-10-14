@@ -8,9 +8,10 @@ priority = 2
 
 ACTIONS = {
     'Upgrade': 'upgraded',
+    'Downgrade': 'downgraded',
     'Install': 'installed',
     'Remove': 'removed',
-    'Downgrade': 'downgraded',
+    'Reinstall': 'reinstalled',
 }
 
 class g:
@@ -18,18 +19,23 @@ class g:
     line = None
 
 def get_time(line):
-    if line.startswith('End-Date:'):
-        return datetime.fromisoformat(line[10:].replace('  ', ' '))
+    vals = line.split(':', maxsplit=1)
+    if len(vals) != 2:
+        return None
 
-    if line.startswith('Start-Date:'):
+    func, rest = vals
+
+    if func == 'Start-Date':
         g.action = None
-    else:
-        for act in ACTIONS:
-            if line.startswith(f'{act}:'):
-                g.line = line[line.index(':') + 2:]
-                g.action = ACTIONS[act]
-                break
+        return None
 
+    if func == 'End-Date':
+        return datetime.fromisoformat(rest[1:].replace('  ', ' '))
+
+    action = ACTIONS.get(func)
+    if action:
+        g.action = action
+        g.line = rest[1:]
     return None
 
 def get_packages():

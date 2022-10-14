@@ -6,34 +6,41 @@ from datetime import datetime
 logfile = '/var/log/dnf.rpm.log'
 priority = 3
 
+# Action mapped to log entry and is_change? flag = yes(1)/no(0)
 ACTIONS = {
-    'Upgraded': 'upgraded',
-    'Installed': 'installed',
-    'Erase': 'removed',
-    'Downgraded': 'downgraded',
+    'Upgraded': ('upgraded', 1),
+    'Downgraded': ('downgraded', 1),
+    'Installed': ('installed', 0),
+    'Erase': ('removed', 0),
+    'Reinstalled': ('reinstalled', 0),
 }
-
-CHANGES = {'u', 'd'}
 
 class g:
     vers = {}
     pkgs = None
 
 def get_time(line):
-    if ' SUBDEBUG ' not in line:
+    fields = line.split(maxsplit=3)
+
+    if len(fields) != 4:
         return None
-    dtstr, _, action, rest = line.split(maxsplit=3)
+
+    dtstr, key, action, rest = fields
+
+    if key != 'SUBDEBUG':
+        return None
+
     action = action[:-1]
     pkg = re.sub(r'\.[^.]+$', '', rest)
     m = re.match(r'^(.+?)-(\d.*)$', pkg)
     pkg, vers = m.group(1), m.group(2)
 
-    action = ACTIONS.get(action)
+    action, change = ACTIONS.get(action, (None, 0))
     if not action:
         g.vers[pkg] = vers
         return None
 
-    if action[0] in CHANGES:
+    if change:
         vers = vers + ' -> ' + g.vers.get(pkg, '?')
 
     g.pkgs = (action, pkg, vers)
