@@ -123,12 +123,16 @@ def compute_start_time(args):
     start_time = None
     days = -1
     if not args.alldays:
-        if args.days:
+        timestr = args.days
+        if timestr:
             try:
-                days = int(args.days)
+                days = int(timestr)
             except Exception:
+                # If no day is included then prepend today
+                if '-' not in timestr:
+                    timestr = date.today().isoformat() + ' ' + timestr
                 try:
-                    start_time = datetime.fromisoformat(args.days)
+                    start_time = datetime.fromisoformat(timestr)
                 except Exception:
                     sys.exit(f'ERROR: Can not parse days value "{args.days}".')
 
@@ -176,7 +180,8 @@ def main():
     opt.add_argument('-d', '--days',
             help='show all packages only from given number of days ago, '
             f'or from given YYYY-MM-DD[?HH:MM[:SS]], default={DAYS}(days), '
-            '0=today, -1=all')
+            '0=today, -1=all. If only time is specified, then today is '
+            'assumed.')
     opt.add_argument('-a', '--alldays', action='store_true',
             help='show all packages for all days (same as "--days=-1")')
     opt.add_argument('-j', '--nojustify', action='store_true',
