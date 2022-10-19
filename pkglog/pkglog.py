@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-'Reports log of package updates.'
+'Reports concise log of package changes.'
 # Author: Mark Blakeney, 2016->2021.
 
 import os
@@ -193,7 +193,7 @@ def main():
     opt.add_argument('-p', '--parser', choices=parsers,
             help=f'log parser type, default={parser}')
     opt.add_argument('-t', '--timegap', type=float, default=TIMEGAP,
-            help=f'max minutes gap between grouped updates, default={TIMEGAP}')
+            help=f'max minutes gap between grouped changes, default={TIMEGAP}')
     opt.add_argument('-P', '--path',
             help='alternate log path[s] '
             f'(separate multiple using "{PATHSEP}", must be time sequenced)')

@@ -1,11 +1,11 @@
-## PKGLOG - Linux utility to output list of changed packages
+## PKGLOG - Linux utility to output concise log of package changes
 [![PyPi](https://img.shields.io/pypi/v/pkglog)](https://pypi.org/project/pkglog/)
 [![AUR](https://img.shields.io/aur/version/pkglog)](https://aur.archlinux.org/packages/pkglog/)
 
-This is a Linux command line utility to output a list of packages
-installed, removed, upgraded, or downgraded. It should be able to parse
-package log formats used by the common Linux distributions. Example
-output is shown below.
+This is a Linux command line utility to output a concise list of
+packages installed, removed, upgraded, downgraded, or reinstalled. It
+should be able to parse package log formats used by the common Linux
+distributions. Example output is shown below.
 
 ![screenshot](https://user-images.githubusercontent.com/217011/195960110-02a43a1c-366a-4e61-9372-10c4f1f4c55f.png)
 
@@ -13,21 +13,22 @@ output is shown below.
    different colors are used to identify the package actions as shown
    in the table below. You can choose to disable colored output.
 
-2. Updates are grouped together by time so you can distinguish the group
-   of packages updated each time you did a system update. By default,
-   all updates with less than a succeeding 2 minute gap between any of
-   them are grouped together, but you can change that time value.
+2. Changes are grouped together by time so you can distinguish the group
+   of packages changed each time you did package
+   updates/installs/removal. By default, all changes with less than a
+   succeeding 2 minute gap between any of them are grouped together, but
+   you can change that time value.
 
-3. By default, only package updates over the last 30 days are shown. You
+3. By default, only package changes over the last 30 days are shown. You
    can choose to specify the number of days back, or from a specific
    date (optionally plus a time, or specify just a time and today is
    assumed), or for all time.
 
 4. The `LAST SYSTEM BOOT` line shows you which packages have been
-   updated since the last boot, e.g. if the linux kernel package was
-   since updated you may decide to reboot asap.
+   changed since the last boot, e.g. if the linux kernel package has
+   updated you may decide to reboot asap.
 
-5. You can specify a package name and only updates to that package are
+5. You can specify a package name and only changes to that package are
    shown. See the USAGE section below.
 
 6. You can use the `-n/--installed-net` option to see a list of all
@@ -78,7 +79,7 @@ usage: pkglog [-h] [-u] [-i] [-I] [-n] [-d DAYS] [-a] [-j] [-v] [-c]
                    [-p {pacman,apt,dnf}] [-t TIMEGAP] [-P PATH] [-g | -r]
                    [package]
 
-Reports log of package updates.
+Reports concise log of package changes.
 
 positional arguments:
   package               specific package name to report
@@ -100,7 +101,7 @@ options:
   -p {pacman,apt,dnf}, --parser {pacman,apt,dnf}
                         log parser type, default=pacman
   -t TIMEGAP, --timegap TIMEGAP
-                        max minutes gap between grouped updates, default=2
+                        max minutes gap between grouped changes, default=2
   -P PATH, --path PATH  alternate log path[s] (separate multiple using ":",
                         must be time sequenced)
   -g, --glob            given package name is glob pattern to match
@@ -119,7 +120,7 @@ to your `pkglog` command line options.
 This allow you to set default preferred starting options to `pkglog`.
 Type `pkglog -h` to see the options supported.
 E.g. `echo "--days 7" >~/.config/pkglog-flags.conf` to make `pkglog`
-only display the last 7 days of updates by default. This is also useful
+only display the last 7 days of changes by default. This is also useful
 to set your parser explicitly using `-p/--parser` (e.g. if the default
 parser is not automatically determined correctly on your system).
 

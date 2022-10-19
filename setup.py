@@ -11,8 +11,8 @@ here = Path(__file__).resolve().parent
 
 setup(
     name=name,
-    version='1.12',
-    description='Reports log of package updates',
+    version='1.13',
+    description='Reports concise log of package changes',
     long_description=here.joinpath('README.md').read_text(),
     long_description_content_type='text/markdown',
     url=f'https://github.com/bulletmark/{name}',
