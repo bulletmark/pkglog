@@ -11,7 +11,7 @@ here = Path(__file__).resolve().parent
 
 setup(
     name=name,
-    version='1.13',
+    version='1.14',
     description='Reports concise log of package changes',
     long_description=here.joinpath('README.md').read_text(),
     long_description_content_type='text/markdown',
