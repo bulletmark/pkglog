@@ -4,7 +4,6 @@ import re
 from datetime import datetime
 
 logfile = '/var/log/dnf.rpm.log'
-priority = 3
 
 # Action mapped to log entry and is_change? flag = yes(1)/no(0)
 ACTIONS = {
@@ -51,6 +50,7 @@ def get_time(line):
     else:
         dtstr = dtstr[:index + 3] + ':' + dtstr[index + 3:]
 
+    # Return the logged time in localtime
     return datetime.fromisoformat(dtstr).astimezone().replace(tzinfo=None)
 
 def get_packages():

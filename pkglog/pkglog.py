@@ -146,25 +146,15 @@ def compute_start_time(args):
     return start_time
 
 def main():
+    parser = None
     parsers = {}
-    order = {}
-    priority = 100
 
     # Load all parsers
-    for index, m in enumerate((MODDIR / 'parsers').glob('[!_]*.py')):
+    for m in (MODDIR / 'parsers').glob('[!_]*.py'):
         name = m.name[:-3]
-        mod = import_path(m)
-        parsers[name] = mod
-        prio = mod.priority if hasattr(mod, 'priority') else (priority + index)
-        order[prio] = name
-
-    # Determine default parser for this system
-    for c in sorted(order):
-        parser = order[c]
-        if Path(parsers[parser].logfile).exists():
-            break
-    else:
-        parser = '?'
+        parsers[name] = mod = import_path(m)
+        if not parser and Path(mod.logfile).exists():
+            parser = name
 
     # Process command line options
     opt = argparse.ArgumentParser(description=__doc__.strip(),
@@ -191,7 +181,7 @@ def main():
     opt.add_argument('-c', '--no-color', action='store_true',
             help='do not color output lines')
     opt.add_argument('-p', '--parser', choices=parsers,
-            help=f'log parser type, default={parser}')
+            help=f'log parser type, default={parser or "?"}')
     opt.add_argument('-t', '--timegap', type=float, default=TIMEGAP,
             help=f'max minutes gap between grouped changes, default={TIMEGAP}')
     opt.add_argument('-P', '--path',

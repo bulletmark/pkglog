@@ -3,7 +3,6 @@
 from datetime import datetime
 
 logfile = '/var/log/pacman.log'
-priority = 1
 
 class g:
     line = None
@@ -15,7 +14,7 @@ def get_time(line):
 
     dts, linetype, rest = vals
 
-    if linetype not in {'[PACMAN]', '[ALPM]'}:
+    if linetype not in {'[ALPM]', '[PACMAN]'}:
         return None
 
     g.line = rest

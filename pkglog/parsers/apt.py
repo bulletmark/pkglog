@@ -4,7 +4,6 @@ import re
 from datetime import datetime
 
 logfile = '/var/log/apt/history.log'
-priority = 2
 
 ACTIONS = {
     'Upgrade': 'upgraded',
