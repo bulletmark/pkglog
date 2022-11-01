@@ -64,11 +64,12 @@ drop the parser file in the `parsers/` directory and the program will
 automatically use it. See the [current parsers](pkglog/parsers) for
 example code.
 
-|Log Parser|Default Path           |Systems            |
+|Log Parser|Default Path           |Distribution       |
 |----------|-----------------------|-------------------|
 |apt       |`/var/log/apt/history*`|Debian, Ubuntu, etc|
 |dnf       |`/var/log/dnf.rpm.log` |RedHat, Fedora, etc|
 |pacman    |`/var/log/pacman.log`  |Arch, Manjaro, etc |
+|zypper    |`/var/log/zypp/history`|OpenSUSE           |
 
 ## USAGE
 
@@ -76,7 +77,8 @@ Type `pkglog -h` to view the usage summary:
 
 ```
 usage: pkglog [-h] [-u] [-i] [-I] [-n] [-d DAYS] [-a] [-j] [-v] [-c]
-                   [-p {pacman,apt,dnf}] [-t TIMEGAP] [-P PATH] [-g | -r]
+                   [-p {pacman,zypper,apt,dnf}] [-t TIMEGAP] [-P PATH]
+                   [-g | -r]
                    [package]
 
 Reports concise log of package changes.
@@ -98,7 +100,7 @@ options:
   -j, --nojustify       don't right justify version numbers
   -v, --verbose         be verbose, describe upgrades/downgrades
   -c, --no-color        do not color output lines
-  -p {pacman,apt,dnf}, --parser {pacman,apt,dnf}
+  -p {pacman,zypper,apt,dnf}, --parser {pacman,zypper,apt,dnf}
                         log parser type, default=pacman
   -t TIMEGAP, --timegap TIMEGAP
                         max minutes gap between grouped changes, default=2
@@ -128,6 +130,7 @@ parser is not automatically determined correctly on your system).
 
 Arch Linux users can install [pkglog from the
 AUR](https://aur.archlinux.org/packages/pkglog). Python 3.7 or later is
+required. [`python-packaging`](https://pypi.org/project/packaging/) is
 required. The [`python-rich`](https://pypi.org/project/rich/) package is
 required if you want colored output (which is the default unless you
 specify the `-c/--no-color` option).

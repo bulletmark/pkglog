@@ -11,7 +11,7 @@ here = Path(__file__).resolve().parent
 
 setup(
     name=name,
-    version='1.15',
+    version='1.16',
     description='Reports concise log of package changes',
     long_description=here.joinpath('README.md').read_text(),
     long_description_content_type='text/markdown',
@@ -23,7 +23,7 @@ setup(
     packages=[module] + [str(d) for d in Path(module).iterdir() if d.is_dir()
         and not d.name.startswith('_') and not d.name.startswith('.')],
     python_requires='>=3.7',
-    install_requires=['rich'],
+    install_requires=['rich', 'packaging'],
     classifiers=[
         'Programming Language :: Python :: 3',
     ],
