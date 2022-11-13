@@ -61,11 +61,15 @@ a [default option](#default-options).
 Parsers for the following log formats currently exist. The appropriate
 parser for you system is normally automatically determined.
 Alternatively, you can choose the log directory[s], file[s], and/or
-parser explicitly using the `-p/--parser` option. A very simple parser
-plugin architecture is used, so creating a new parser is easy. Simply
-drop the parser file in the `parsers/` directory and the program will
-automatically use it. See the [current parsers](pkglog/parsers) for
-example code.
+parser explicitly using the `-p/--parser` option.
+
+A very simple parser plugin architecture is used, so creating a new
+parser is easy. Use the `-f/--parser-file` option to specify the path to
+your custom parser. By default, parsers are loaded from the `parsers/`
+sub-directory so, if cloning, forking, or submitting a PR for the
+software, then simply place your custom parser file in that directory
+and the program will automatically recognise it. See the [current
+parsers](pkglog/parsers) for example code.
 
 |Log Parser|Default Path           |Distribution       |
 |----------|-----------------------|-------------------|
@@ -80,8 +84,8 @@ Type `pkglog -h` to view the usage summary:
 
 ```
 usage: pkglog [-h] [-u] [-i] [-I] [-n] [-d DAYS] [-a] [-j] [-v] [-c]
-                   [-p {pacman,zypper,apt,dnf}] [-t TIMEGAP] [-P PATH]
-                   [-g | -r]
+                   [-p {pacman,zypper,apt,dnf} | -f PARSER_FILE] [-t TIMEGAP]
+                   [-P PATH] [-g | -r]
                    [package]
 
 Reports concise log of package changes.
@@ -105,6 +109,8 @@ options:
   -c, --no-color        do not color output lines
   -p {pacman,zypper,apt,dnf}, --parser {pacman,zypper,apt,dnf}
                         log parser type, default=pacman
+  -f PARSER_FILE, --parser-file PARSER_FILE
+                        path to alternate custom parser file
   -t TIMEGAP, --timegap TIMEGAP
                         max minutes gap between grouped changes, default=2
   -P PATH, --path PATH  alternate log path[s] (separate multiple using ":",

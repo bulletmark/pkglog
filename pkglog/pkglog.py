@@ -118,6 +118,15 @@ def import_path(path):
     spec.loader.exec_module(module)
     return module
 
+class Parser:
+    'Class to wrap parser files'
+    def __init__(self, path):
+        self.module = import_path(path)
+        if not hasattr(self.module, 'logfile'):
+            sys.exit(f'Must define logfile attribute for {path}')
+
+        self.logfile = Path(self.module.logfile)
+
 def compute_start_time(args):
     'Compute start time from when to output log'
     start_time = None
@@ -146,15 +155,14 @@ def compute_start_time(args):
     return start_time
 
 def main():
-    parser = None
+    def_parser = None
     parsers = {}
 
     # Load all parsers
     for m in (MODDIR / 'parsers').glob('[!_]*.py'):
-        name = m.name[:-3]
-        parsers[name] = mod = import_path(m)
-        if not parser and Path(mod.logfile).exists():
-            parser = name
+        parsers[m.stem] = parser = Parser(m)
+        if not def_parser and parser.logfile.exists():
+            def_parser = m.stem
 
     # Process command line options
     opt = argparse.ArgumentParser(description=__doc__.strip(),
@@ -180,17 +188,20 @@ def main():
             help='be verbose, describe upgrades/downgrades')
     opt.add_argument('-c', '--no-color', action='store_true',
             help='do not color output lines')
-    opt.add_argument('-p', '--parser', choices=parsers,
-            help=f'log parser type, default={parser or "?"}')
+    grp1 = opt.add_mutually_exclusive_group()
+    grp1.add_argument('-p', '--parser', choices=parsers,
+            help=f'log parser type, default={def_parser or "?"}')
+    grp1.add_argument('-f', '--parser-file',
+            help='path to alternate custom parser file')
     opt.add_argument('-t', '--timegap', type=float, default=TIMEGAP,
             help=f'max minutes gap between grouped changes, default={TIMEGAP}')
     opt.add_argument('-P', '--path',
             help='alternate log path[s] '
             f'(separate multiple using "{PATHSEP}", must be time sequenced)')
-    grp = opt.add_mutually_exclusive_group()
-    grp.add_argument('-g', '--glob', action='store_true',
+    grp2 = opt.add_mutually_exclusive_group()
+    grp2.add_argument('-g', '--glob', action='store_true',
             help='given package name is glob pattern to match')
-    grp.add_argument('-r', '--regex', action='store_true',
+    grp2.add_argument('-r', '--regex', action='store_true',
             help='given package name is regular expression to match')
     opt.add_argument('package', nargs='?',
             help='specific package name to report')
@@ -214,8 +225,21 @@ def main():
         else:
             Queue.console = Console()
 
-    if args.parser:
-        parser = args.parser
+    if args.parser_file:
+        # Get alternate custom parser file
+        path = Path(args.parser_file)
+        if path.suffix.lower() != '.py':
+            sys.exit(f'ERROR: "{path}" must end in .py')
+        if not path.exists() or path.is_dir():
+            sys.exit(f'ERROR: "{path}" must be an existing python file')
+
+        parser = Parser(path)
+    else:
+        # Get parser specified on command line or default parser
+        parser = parsers.get(args.parser or def_parser)
+
+    if not parser:
+        sys.exit('ERROR: Can not determine log parser for this system.')
 
     if args.package:
         if args.glob:
@@ -230,12 +254,6 @@ def main():
     if args.installed_net:
         args.installed = True
 
-    logmod = parsers.get(parser)
-    if not logmod:
-        sys.exit('ERROR: Can not determine log parser for this system.')
-
-    defpath = Path(logmod.logfile)
-
     if not args.package and not (args.installed or args.installed_only):
         Queue.delim = 80 * '-'
 
@@ -249,6 +267,9 @@ def main():
         Queue.boottime = datetime.now() - timedelta(seconds=upsecs)
         timestr = Queue.boottime.isoformat(' ', 'seconds')
         Queue.bootstr = f'{timestr} ### LAST SYSTEM BOOT ###'
+
+    defpath = parser.logfile
+    logmod = parser.module
 
     if args.path:
         pathlist = [Path(p) for p in args.path.split(PATHSEP)]
