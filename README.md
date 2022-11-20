@@ -50,11 +50,8 @@ See the latest documentation and code at https://github.com/bulletmark/pkglog.
 |Downgraded    |magenta
 |Reinstalled   |cyan
 
-Colored output is only available if the
-[`python-rich`](https://pypi.org/project/rich/) package is installed
-and, if so, then colors are enabled automatically. You can use a command
-line option to disable colors explicitly, or set that option disabled as
-a [default option](#default-options).
+You can use a command line option to disable colors explicitly, or set
+that option disabled as a [default option](#default-options).
 
 ## LOG FILE FORMATS
 
@@ -140,9 +137,7 @@ parser is not automatically determined correctly on your system).
 Arch Linux users can install [pkglog from the
 AUR](https://aur.archlinux.org/packages/pkglog). Python 3.7 or later is
 required. [`python-packaging`](https://pypi.org/project/packaging/) is
-also required. You need the
-[`python-rich`](https://pypi.org/project/rich/) package to get colored
-output.
+also required.
 
 Note [pkglog is on PyPI](https://pypi.org/project/pkglog/) so just
 ensure that `python3-pip` and `python3-wheel` are installed then type

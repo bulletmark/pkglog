@@ -18,12 +18,22 @@ PATHSEP = ':'
 
 DAYS = 30
 
+# Define ANSI escape sequences for colors ..
+COLOR_red = '\033[31m'
+COLOR_green = '\033[32m'
+COLOR_yellow = '\033[33m'
+COLOR_blue = '\033[34m'
+COLOR_magenta = '\033[35m'
+COLOR_cyan = '\033[36m'
+COLOR_white = '\033[37m'
+COLOR_reset = '\033[39m'
+
 ACTIONS = {
-    'installed': (1, 'green'),
-    'removed': (2, 'red'),
-    'upgraded': (3, 'yellow'),
-    'downgraded': (3, 'magenta'),
-    'reinstalled': (4, 'cyan'),
+    'installed': (1, COLOR_green),
+    'removed': (2, COLOR_red),
+    'upgraded': (3, COLOR_yellow),
+    'downgraded': (3, COLOR_magenta),
+    'reinstalled': (4, COLOR_cyan),
 }
 
 MODDIR = Path(__file__).parent.resolve()
@@ -33,7 +43,7 @@ CNFFILE = Path(os.getenv('XDG_CONFIG_HOME', '~/.config'),
 class Queue:
     queue = []
     installed = {}
-    console = None
+    no_color = None
     boottime = None
     bootstr = None
     delim = None
@@ -43,11 +53,10 @@ class Queue:
         'Output given message'
         for m in msg:
             if m:
-                if cls.console:
-                    cls.console.print(m, style=(color or 'white'),
-                                      highlight=False)
-                else:
+                if cls.no_color:
                     print(m)
+                else:
+                    print((color or COLOR_reset) + m)
 
     @classmethod
     def output(cls, args):
@@ -217,13 +226,7 @@ def main():
 
     args = opt.parse_args(shlex.split(cnflines) + sys.argv[1:])
 
-    if not args.no_color:
-        try:
-            from rich.console import Console
-        except Exception:
-            args.no_color = True
-        else:
-            Queue.console = Console()
+    Queue.no_color = args.no_color
 
     if args.parser_file:
         # Get alternate custom parser file
