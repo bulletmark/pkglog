@@ -226,7 +226,7 @@ def main():
 
     args = opt.parse_args(shlex.split(cnflines) + sys.argv[1:])
 
-    Queue.no_color = args.no_color
+    Queue.no_color = args.no_color or not sys.stdout.isatty()
 
     if args.parser_file:
         # Get alternate custom parser file
