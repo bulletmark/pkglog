@@ -56,7 +56,10 @@ class Queue:
                 if cls.no_color:
                     print(m)
                 else:
-                    print((color or COLOR_reset) + m)
+                    if color:
+                        m = color + m
+
+                    print(m + COLOR_reset)
 
     @classmethod
     def output(cls, args):
