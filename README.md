@@ -61,12 +61,12 @@ Alternatively, you can choose the log directory[s], file[s], and/or
 parser explicitly using the `-p/--parser` option.
 
 A very simple parser plugin architecture is used, so creating a new
-parser is easy. Use the `-f/--parser-file` option to specify the path to
-your custom parser. By default, parsers are loaded from the `parsers/`
-sub-directory so, if cloning, forking, or submitting a PR for the
-software, then simply place your custom parser file in that directory
-and the program will automatically recognise it. See the [current
-parsers](pkglog/parsers) for example code.
+parser is easy. Use the `-f/--parser-file` option to explicitly specify
+the path to your custom parser for development. By default, parsers are
+loaded from the `parsers/` sub-directory so, if cloning, forking, or
+submitting a PR for the software, then simply place your custom parser
+file in that directory and the program will automatically recognise it.
+See the [current parsers](pkglog/parsers) for example code.
 
 |Log Parser|Default Path           |Distribution       |
 |----------|-----------------------|-------------------|
