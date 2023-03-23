@@ -84,7 +84,7 @@ class Queue:
                     continue
             if args.package:
                 if args.regex:
-                    if not args.regex.match(pkg):
+                    if not args.regex.search(pkg):
                         continue
                 elif pkg != args.package:
                     continue
