@@ -21,7 +21,7 @@ setup(
     keywords='pacman apt-get apt dnf',
     license='GPLv3',
     packages=[module] + [str(d) for d in Path(module).iterdir() if d.is_dir()
-        and not d.name.startswith('_') and not d.name.startswith('.')],
+                         and d.name[0] not in '._'],
     python_requires='>=3.7',
     install_requires=['packaging'],
     classifiers=[
