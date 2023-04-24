@@ -139,7 +139,7 @@ AUR](https://aur.archlinux.org/packages/pkglog).
 
 Python 3.7 or later is required. Python package
 [`looseversion`](https://pypi.org/project/looseversion/) is also
-required.
+required if you want to parse zypper logs.
 
 Note [pkglog is on PyPI](https://pypi.org/project/pkglog/) so just
 ensure that `python3-pip` and `python3-wheel` are installed then type

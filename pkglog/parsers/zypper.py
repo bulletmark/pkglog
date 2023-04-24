@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 'Parse OpenSUSE zypper log format'
+import sys
 from datetime import datetime
-from looseversion import LooseVersion as Version
 
 # User may want to chmod 755 the "/var/log/zypp" directory so they can
 # run this tool as normal user.
@@ -38,6 +38,12 @@ def get_time(line):
     return datetime.fromisoformat(datestr)
 
 def get_packages():
+    try:
+        from looseversion import LooseVersion as Version
+    except Exception:
+        sys.exit('Error: Need to install Python looseversion package to use '
+        'zypper parsing.')
+
     if g.removed:
         action = 'removed'
     elif g.oldvers:
