@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 'Parse OpenSUSE zypper log format'
 from datetime import datetime
-from packaging.version import parse
+from looseversion import LooseVersion as Version
 
 # User may want to chmod 755 the "/var/log/zypp" directory so they can
 # run this tool as normal user.
@@ -41,8 +41,8 @@ def get_packages():
     if g.removed:
         action = 'removed'
     elif g.oldvers:
-        vers = parse(g.vers)
-        oldvers = parse(g.oldvers)
+        vers = Version(g.vers)
+        oldvers = Version(g.oldvers)
         if vers == oldvers:
             action = 'reinstalled'
         else:

@@ -203,8 +203,8 @@ def main():
     grp1 = opt.add_mutually_exclusive_group()
     grp1.add_argument('-p', '--parser', choices=parsers,
             help=f'log parser type, default={def_parser or "?"}')
-    grp1.add_argument('-f', '--parser-file',
-            help='path to alternate custom parser file')
+    grp1.add_argument('-f', '--parser-plugin',
+            help='path to alternate custom parser plugin file')
     opt.add_argument('-t', '--timegap', type=float, default=TIMEGAP,
             help=f'max minutes gap between grouped changes, default={TIMEGAP}')
     opt.add_argument('-P', '--path',
@@ -231,9 +231,9 @@ def main():
 
     Queue.no_color = args.no_color or not sys.stdout.isatty()
 
-    if args.parser_file:
+    if args.parser_plugin:
         # Get alternate custom parser file
-        path = Path(args.parser_file)
+        path = Path(args.parser_plugin)
         if path.suffix.lower() != '.py':
             sys.exit(f'ERROR: "{path}" must end in .py')
         if not path.exists() or path.is_dir():

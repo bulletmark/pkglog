@@ -81,8 +81,8 @@ Type `pkglog -h` to view the usage summary:
 
 ```
 usage: pkglog [-h] [-u] [-i] [-I] [-n] [-d DAYS] [-a] [-j] [-v] [-c]
-                   [-p {pacman,zypper,apt,dnf} | -f PARSER_FILE] [-t TIMEGAP]
-                   [-P PATH] [-g | -r]
+                   [-p {pacman,zypper,apt,dnf} | -f PARSER_PLUGIN]
+                   [-t TIMEGAP] [-P PATH] [-g | -r]
                    [package]
 
 Reports concise log of package changes.
@@ -106,8 +106,8 @@ options:
   -c, --no-color        do not color output lines
   -p {pacman,zypper,apt,dnf}, --parser {pacman,zypper,apt,dnf}
                         log parser type, default=pacman
-  -f PARSER_FILE, --parser-file PARSER_FILE
-                        path to alternate custom parser file
+  -f PARSER_PLUGIN, --parser-plugin PARSER_PLUGIN
+                        path to alternate custom parser plugin file
   -t TIMEGAP, --timegap TIMEGAP
                         max minutes gap between grouped changes, default=2
   -P PATH, --path PATH  alternate log path[s] (separate multiple using ":",
@@ -135,16 +135,18 @@ parser is not automatically determined correctly on your system).
 ## INSTALLATION
 
 Arch Linux users can install [pkglog from the
-AUR](https://aur.archlinux.org/packages/pkglog). Python 3.7 or later is
-required. [`python-packaging`](https://pypi.org/project/packaging/) is
-also required.
+AUR](https://aur.archlinux.org/packages/pkglog).
+
+Python 3.7 or later is required. Python package
+[`looseversion`](https://pypi.org/project/looseversion/) is also
+required.
 
 Note [pkglog is on PyPI](https://pypi.org/project/pkglog/) so just
 ensure that `python3-pip` and `python3-wheel` are installed then type
 the following to install (or upgrade):
 
 ```
-$ sudo pip3 install -U pkglog
+$ sudo pip3 install -U --use-pep517 --root-user-action=ignore pkglog
 ```
 
 Alternatively, do the following to install from the source repository.
@@ -152,7 +154,7 @@ Alternatively, do the following to install from the source repository.
 ```sh
 $ git clone http://github.com/bulletmark/pkglog
 $ cd pkglog
-$ sudo pip3 install -U .
+$ sudo pip3 install -U --use-pep517 --root-user-action=ignore .
 ```
 
 ## UPGRADE
@@ -160,13 +162,13 @@ $ sudo pip3 install -U .
 ```sh
 $ cd pkglog  # Source dir, as above
 $ git pull
-$ sudo pip3 install -U .
+$ sudo pip3 install -U --use-pep517 --root-user-action=ignore .
 ```
 
 ## REMOVAL
 
 ```sh
-$ sudo pip3 uninstall pkglog
+$ sudo pip3 uninstall --root-user-action=ignore pkglog
 ```
 
 ## LICENSE
