@@ -80,7 +80,7 @@ See the [current parsers](pkglog/parsers) for example code.
 Type `pkglog -h` to view the usage summary:
 
 ```
-usage: pkglog [-h] [-u] [-i] [-I] [-n] [-d DAYS] [-a] [-j] [-v] [-c]
+usage: pkglog [-h] [-u | -i | -I | -n] [-d DAYS | -a | -b] [-j] [-v] [-c]
                    [-p {pacman,zypper,apt,dnf} | -f PARSER_PLUGIN]
                    [-t TIMEGAP] [-P PATH] [-g | -r]
                    [package]
@@ -101,6 +101,7 @@ options:
                         default=30(days), 0=today, -1=all. If only time is
                         specified, then today is assumed.
   -a, --alldays         show all packages for all days (same as "--days=-1")
+  -b, --boot            show only packages updated since last boot
   -j, --nojustify       don't right justify version numbers
   -v, --verbose         be verbose, describe upgrades/downgrades
   -c, --no-color        do not color output lines

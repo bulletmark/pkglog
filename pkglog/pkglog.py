@@ -179,21 +179,25 @@ def main():
     # Process command line options
     opt = argparse.ArgumentParser(description=__doc__.strip(),
             epilog=f'Note you can set default starting options in {CNFFILE}.')
-    opt.add_argument('-u', '--updated-only', action='store_true',
+    grp = opt.add_mutually_exclusive_group()
+    grp.add_argument('-u', '--updated-only', action='store_true',
             help='show updated only')
-    opt.add_argument('-i', '--installed', action='store_true',
+    grp.add_argument('-i', '--installed', action='store_true',
             help='show installed/removed only')
-    opt.add_argument('-I', '--installed-only', action='store_true',
+    grp.add_argument('-I', '--installed-only', action='store_true',
             help='show installed only')
-    opt.add_argument('-n', '--installed-net', action='store_true',
+    grp.add_argument('-n', '--installed-net', action='store_true',
             help='show net installed only')
-    opt.add_argument('-d', '--days',
+    grp = opt.add_mutually_exclusive_group()
+    grp.add_argument('-d', '--days',
             help='show all packages only from given number of days ago, '
             f'or from given YYYY-MM-DD[?HH:MM[:SS]], default={DAYS}(days), '
             '0=today, -1=all. If only time is specified, then today is '
             'assumed.')
-    opt.add_argument('-a', '--alldays', action='store_true',
+    grp.add_argument('-a', '--alldays', action='store_true',
             help='show all packages for all days (same as "--days=-1")')
+    grp.add_argument('-b', '--boot', action='store_true',
+            help='show only packages updated since last boot')
     opt.add_argument('-j', '--nojustify', action='store_true',
             help='don\'t right justify version numbers')
     opt.add_argument('-v', '--verbose', action='store_true',
@@ -220,12 +224,13 @@ def main():
 
     # Merge in default options from user config file. Then parse the
     # command line.
-    cnflines = ''
     cnffile = CNFFILE.expanduser()
     if cnffile.exists():
         with cnffile.open() as fp:
             cnflines = [re.sub(r'#.*$', '', line).strip() for line in fp]
         cnflines = ' '.join(cnflines).strip()
+    else:
+        cnflines = ''
 
     args = opt.parse_args(shlex.split(cnflines) + sys.argv[1:])
 
@@ -260,17 +265,19 @@ def main():
     if args.installed_net:
         args.installed = True
 
-    if not args.package and not (args.installed or args.installed_only):
+    if not args.package and not args.boot and \
+            not (args.installed or args.installed_only):
         Queue.delim = 80 * '-'
 
     timegap = timedelta(minutes=args.timegap)
     dt_out = datetime.max
     start_time = compute_start_time(args) or datetime.min
 
-    if not args.package:
-        # Get last boot time
-        upsecs = float(Path('/proc/uptime').read_text().split()[0])
-        Queue.boottime = datetime.now() - timedelta(seconds=upsecs)
+    # Get last boot time
+    upsecs = float(Path('/proc/uptime').read_text().split()[0])
+    Queue.boottime = datetime.now() - timedelta(seconds=upsecs)
+
+    if not args.package and not args.boot:
         timestr = Queue.boottime.isoformat(' ', 'seconds')
         Queue.bootstr = f'{timestr} ### LAST SYSTEM BOOT ###'
 
@@ -306,7 +313,7 @@ def main():
             if not dt:
                 continue
 
-            if dt < start_time:
+            if dt < start_time or args.boot and dt < Queue.boottime:
                 continue
 
             if dt - dt_out > timegap and not args.installed_net:
