@@ -265,8 +265,7 @@ def main():
     if args.installed_net:
         args.installed = True
 
-    if not args.package and not args.boot and \
-            not (args.installed or args.installed_only):
+    if not args.package and not (args.installed or args.installed_only):
         Queue.delim = 80 * '-'
 
     timegap = timedelta(minutes=args.timegap)
