@@ -22,7 +22,7 @@ distributions. Example output is shown below.
 3. By default, only package changes over the last 30 days are shown. You
    can choose to specify the number of days back, or from a specific
    date (optionally plus a time, or specify just a time and today is
-   assumed), or for all time.
+   assumed), since last boot, or for all time.
 
 4. The `LAST SYSTEM BOOT` line shows you which packages have been
    changed since the last boot, e.g. if the linux kernel package has
@@ -57,8 +57,9 @@ that option disabled as a [default option](#default-options).
 
 Parsers for the following log formats currently exist. The appropriate
 parser for you system is normally automatically determined.
-Alternatively, you can choose the log directory[s], file[s], and/or
-parser explicitly using the `-p/--parser` option.
+Alternatively, you can choose the log file path[s], and/or parser
+explicitly. You can also set these as [default
+options](#default-options).
 
 A very simple parser plugin architecture is used, so creating a new
 parser is easy. Use the `-f/--parser-file` option to explicitly specify

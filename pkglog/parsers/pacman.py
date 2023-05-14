@@ -4,6 +4,8 @@ from datetime import datetime
 
 logfile = '/var/log/pacman.log'
 
+LINETYPES = {'[ALPM]', '[PACMAN]'}
+
 class g:
     line = None
 
@@ -14,7 +16,7 @@ def get_time(line):
 
     dts, linetype, rest = vals
 
-    if linetype not in {'[ALPM]', '[PACMAN]'}:
+    if linetype not in LINETYPES:
         return None
 
     g.line = rest
