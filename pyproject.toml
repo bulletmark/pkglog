@@ -29,7 +29,7 @@ pkglog = "pkglog.pkglog:main"
 text = "GPLv3"
 
 [tool.setuptools.packages.find]
-where = ["pkglog"]
+exclude = ["logs"]
 
 [tool.setuptools_scm]
 version_scheme = "post-release"
