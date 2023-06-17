@@ -219,6 +219,8 @@ def main():
             help='given package name is glob pattern to match')
     grp2.add_argument('-r', '--regex', action='store_true',
             help='given package name is regular expression to match')
+    opt.add_argument('-V', '--version', action='store_true',
+            help=f'show {opt.prog} version')
     opt.add_argument('package', nargs='?',
             help='specific package name to report')
 
@@ -233,6 +235,20 @@ def main():
         cnflines = ''
 
     args = opt.parse_args(shlex.split(cnflines) + sys.argv[1:])
+
+    if args.version:
+        try:
+            from importlib.metadata import version
+        except ImportError:
+            from importlib_metadata import version
+
+        try:
+            ver = version(opt.prog)
+        except Exception:
+            ver = 'unknown'
+
+        print(ver)
+        return
 
     Queue.no_color = args.no_color or not sys.stdout.isatty()
 

@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools>=61.0", "setuptools-scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pkglog"
+description = "Reports concise log of package changes"
+readme = "README.md"
+authors = [
+  {name = "Mark Blakeney", email = "mark.blakeney@bullet-systems.net"},
+]
+requires-python = ">=3.7"
+keywords = ["pacman", "apt-get", "apt", "dnf"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+]
+dynamic = ["version"]
+dependencies = [
+  "importlib-metadata; python_version < '3.8'",
+]
+
+[project.urls]
+Homepage = "https://github.com/bulletmark/pkglog"
+
+[project.scripts]
+pkglog = "pkglog.pkglog:main"
+
+[project.license]
+text = "GPLv3"
+
+[tool.setuptools.packages.find]
+where = ["pkglog"]
+
+[tool.setuptools_scm]
+version_scheme = "post-release"
+
+[tool.edit-lint]
+linters = [
+  "ruff",
+  "flake8",
+]
+
+# vim:se sw=2:

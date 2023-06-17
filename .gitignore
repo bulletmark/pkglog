@@ -1,6 +1,7 @@
 README.html
 build/
 dist/
+logs/
 .idea/
 .vscode/
 *.egg-info/

@@ -83,7 +83,7 @@ Type `pkglog -h` to view the usage summary:
 ```
 usage: pkglog [-h] [-u | -i | -I | -n] [-d DAYS | -a | -b] [-j] [-v] [-c]
                    [-p {pacman,zypper,apt,dnf} | -f PARSER_PLUGIN]
-                   [-t TIMEGAP] [-P PATH] [-g | -r]
+                   [-t TIMEGAP] [-P PATH] [-g | -r] [-V]
                    [package]
 
 Reports concise log of package changes.
@@ -116,6 +116,7 @@ options:
                         must be time sequenced)
   -g, --glob            given package name is glob pattern to match
   -r, --regex           given package name is regular expression to match
+  -V, --version         show pkglog version
 
 Note you can set default starting options in ~/.config/pkglog-flags.conf.
 ```
@@ -148,7 +149,7 @@ ensure that `python3-pip` and `python3-wheel` are installed then type
 the following to install (or upgrade):
 
 ```
-$ sudo pip3 install -U --use-pep517 --root-user-action=ignore pkglog
+$ sudo pip3 install -U pkglog
 ```
 
 Alternatively, do the following to install from the source repository.
@@ -156,7 +157,7 @@ Alternatively, do the following to install from the source repository.
 ```sh
 $ git clone http://github.com/bulletmark/pkglog
 $ cd pkglog
-$ sudo pip3 install -U --use-pep517 --root-user-action=ignore .
+$ sudo pip3 install -U .
 ```
 
 ## UPGRADE
@@ -164,13 +165,13 @@ $ sudo pip3 install -U --use-pep517 --root-user-action=ignore .
 ```sh
 $ cd pkglog  # Source dir, as above
 $ git pull
-$ sudo pip3 install -U --use-pep517 --root-user-action=ignore .
+$ sudo pip3 install -U .
 ```
 
 ## REMOVAL
 
 ```sh
-$ sudo pip3 uninstall --root-user-action=ignore pkglog
+$ sudo pip3 uninstall pkglog
 ```
 
 ## LICENSE
