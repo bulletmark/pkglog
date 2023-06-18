@@ -140,38 +140,27 @@ parser is not automatically determined correctly on your system).
 Arch Linux users can install [pkglog from the
 AUR](https://aur.archlinux.org/packages/pkglog).
 
-Python 3.7 or later is required. Python package
-[`looseversion`](https://pypi.org/project/looseversion/) is also
-required if you want to parse zypper logs.
-
+Python 3.7 or later is required.
 Note [pkglog is on PyPI](https://pypi.org/project/pkglog/) so just
-ensure that `python3-pip` and `python3-wheel` are installed then type
-the following to install (or upgrade):
+ensure that [`pipx`](https://pypa.github.io/pipx/) is installed then
+type the following:
 
 ```
-$ sudo pip3 install -U pkglog
+$ pipx install pkglog
 ```
 
-Alternatively, do the following to install from the source repository.
+To upgrade:
 
-```sh
-$ git clone http://github.com/bulletmark/pkglog
-$ cd pkglog
-$ sudo pip3 install -U .
+```
+$ pipx upgrade pkglog
 ```
 
-## UPGRADE
+Note that python package
+[`looseversion`](https://pypi.org/project/looseversion/) is also
+required if you want to parse zypper logs:
 
-```sh
-$ cd pkglog  # Source dir, as above
-$ git pull
-$ sudo pip3 install -U .
 ```
-
-## REMOVAL
-
-```sh
-$ sudo pip3 uninstall pkglog
+$ pipx inject pkglog looseversion
 ```
 
 ## LICENSE
