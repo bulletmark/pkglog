@@ -29,7 +29,10 @@ def get_time(line):
         return None
 
     if func == 'End-Date':
-        return datetime.fromisoformat(rest[1:].replace('  ', ' '))
+        try:
+            return datetime.fromisoformat(rest[1:].replace('  ', ' '))
+        except Exception:
+            return None
 
     action = ACTIONS.get(func)
     if action:

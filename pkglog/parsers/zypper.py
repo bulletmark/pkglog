@@ -35,7 +35,13 @@ def get_time(line):
 
     g.pkg = pkg
     g.vers = vers
-    return datetime.fromisoformat(datestr)
+
+    try:
+        dt = datetime.fromisoformat(datestr)
+    except Exception:
+        return None
+
+    return dt
 
 def get_packages():
     try:

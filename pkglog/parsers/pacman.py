@@ -19,10 +19,13 @@ def get_time(line):
     if linetype not in LINETYPES:
         return None
 
-    g.line = rest
-
     # Add missing ":" in timezone which fromisoformat() requires
-    dt = datetime.fromisoformat(f'{dts[1:23]}:{dts[23:-1]}')
+    try:
+        dt = datetime.fromisoformat(f'{dts[1:23]}:{dts[23:-1]}')
+    except Exception:
+        return None
+
+    g.line = rest
 
     # We also convert the logged time to localtime
     return dt.astimezone().replace(tzinfo=None)

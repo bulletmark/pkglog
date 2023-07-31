@@ -51,7 +51,12 @@ def get_time(line):
         dtstr = dtstr[:index + 3] + ':' + dtstr[index + 3:]
 
     # Return the logged time in localtime
-    return datetime.fromisoformat(dtstr).astimezone().replace(tzinfo=None)
+    try:
+        dt = datetime.fromisoformat(dtstr).astimezone().replace(tzinfo=None)
+    except Exception:
+        return None
+
+    return dt
 
 def get_packages():
     yield g.pkgs
