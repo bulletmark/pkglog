@@ -19,6 +19,9 @@ def get_time(line):
     if linetype not in LINETYPES:
         return None
 
+    # Pacman log sometimes has stray leading nulls
+    dts = dts.lstrip().lstrip('\0').strip()
+
     # Add missing ":" in timezone which fromisoformat() requires
     try:
         dt = datetime.fromisoformat(f'{dts[1:23]}:{dts[23:-1]}')

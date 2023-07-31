@@ -30,7 +30,7 @@ def get_time(line):
 
     if func == 'End-Date':
         try:
-            return datetime.fromisoformat(rest[1:].replace('  ', ' '))
+            return datetime.fromisoformat(rest[1:].strip().replace('  ', ' '))
         except Exception:
             return None
 

@@ -20,7 +20,7 @@ def get_time(line):
     if len(vals) < 4:
         return None
 
-    datestr, func, pkg, vers, _ = vals
+    dts, func, pkg, vers, _ = vals
 
     if func == 'install':
         g.oldvers = _pkgs.get(pkg)
@@ -37,7 +37,7 @@ def get_time(line):
     g.vers = vers
 
     try:
-        dt = datetime.fromisoformat(datestr)
+        dt = datetime.fromisoformat(dts.strip())
     except Exception:
         return None
 

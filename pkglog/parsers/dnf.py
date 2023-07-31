@@ -24,7 +24,7 @@ def get_time(line):
     if len(fields) != 4:
         return None
 
-    dtstr, key, action, rest = fields
+    dts, key, action, rest = fields
 
     if key != 'SUBDEBUG':
         return None
@@ -44,15 +44,16 @@ def get_time(line):
 
     g.pkgs = (action, pkg, vers)
 
-    index = dtstr.find('+')
+    dts = dts.strip()
+    index = dts.find('+')
     if index < 0:
-        dtstr = dtstr.replace('Z', '+00:00')
+        dts = dts.replace('Z', '+00:00')
     else:
-        dtstr = dtstr[:index + 3] + ':' + dtstr[index + 3:]
+        dts = dts[:index + 3] + ':' + dts[index + 3:]
 
     # Return the logged time in localtime
     try:
-        dt = datetime.fromisoformat(dtstr).astimezone().replace(tzinfo=None)
+        dt = datetime.fromisoformat(dts).astimezone().replace(tzinfo=None)
     except Exception:
         return None
 
