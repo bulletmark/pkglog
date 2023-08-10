@@ -36,11 +36,12 @@ distributions. Example output is shown below.
    this option after you have installed and removed a heap of trial
    packages and you want to easily see if you have actually removed all
    of them and their dependencies. E.g. `pkglog -n -d0` shows a net
-   summary of packages you ended up installing today.
+   summary of packages you ended up installing today. Refer to the
+   [Installed Net Output Options](#installed-net-output-options) section below.
 
 See the latest documentation and code at https://github.com/bulletmark/pkglog.
 
-## COLORED OUTPUT LINES
+## Colored Output Lines
 
 |Package Action|Line Text Color
 |--------------|-----
@@ -53,7 +54,7 @@ See the latest documentation and code at https://github.com/bulletmark/pkglog.
 You can use a command line option to disable colors explicitly, or set
 that option disabled as a [default option](#default-options).
 
-## LOG FILE FORMATS
+## Log File Formats
 
 Parsers for the following log formats currently exist. The appropriate
 parser for you system is normally automatically determined.
@@ -76,12 +77,13 @@ See the [current parsers](pkglog/parsers) for example code.
 |pacman    |`/var/log/pacman.log`  |Arch, Manjaro, etc |
 |zypper    |`/var/log/zypp/history`|OpenSUSE           |
 
-## USAGE
+## Usage
 
 Type `pkglog -h` to view the usage summary:
 
 ```
-usage: pkglog [-h] [-u | -i | -I | -n] [-d DAYS | -a | -b] [-j] [-v] [-c]
+usage: pkglog [-h] [-u | -i | -I | -n] [-N INSTALLED_NET_DAYS]
+                   [-d DAYS | -a | -b] [-j] [-v] [-c]
                    [-p {pacman,zypper,apt,dnf} | -f PARSER_PLUGIN]
                    [-t TIMEGAP] [-P PATH] [-g | -r] [-V]
                    [package]
@@ -97,6 +99,9 @@ options:
   -i, --installed       show installed/removed only
   -I, --installed-only  show installed only
   -n, --installed-net   show net installed only
+  -N INSTALLED_NET_DAYS, --installed-net-days INSTALLED_NET_DAYS
+                        days previously removed before being re-considered as
+                        new net installed, default=2. Set to 0 to disable.
   -d DAYS, --days DAYS  show all packages only from given number of days ago,
                         or from given YYYY-MM-DD[?HH:MM[:SS]],
                         default=30(days), 0=today, -1=all. If only time is
@@ -121,7 +126,36 @@ options:
 Note you can set default starting options in ~/.config/pkglog-flags.conf.
 ```
 
-## DEFAULT OPTIONS
+## Installed Net Output Options
+
+The purpose of the `-n/--installed-net` option is perhaps not
+intuitively clear so this section explains it by way of an example.
+
+There are times when experimenting etc that I install and remove a heap
+of various packages, e.g. over a few hours or days. At the end of that
+experiment I remove all the packages I believe I installed for my
+experiment. However, I am never too sure I have removed everything, e.g.
+some dependencies that were automatically installed. So I type:
+
+```bash
+$ pkglog -d4 -n
+```
+
+The above shows the "net" packages have ended up installed over the last 4
+days, i.e. those that were newly installed in the last 4 days and not
+yet removed. I can then manually remove any packages I see listed that I
+don't want.
+
+There are some favorite packages which I normally have always installed
+but I may remove very temporarily for some reason. Since these packages
+then appear "newly" installed then they may be undesirably listed in the
+`-n/--installed-net` output. To avoid this the `-N/--installed-net-days`
+option, by default set to 2 days, removes packages from the
+`-n/--installed-net` output which were previously uninstalled only for
+that specified number of days or less. You can disable this filter
+option by setting it to 0, e.g. as a [default option](#default-options).
+
+## Default Options
 
 You can add default options to a personal configuration file
 `~/.config/pkglog-flags.conf`. If that file exists then each line of
@@ -135,7 +169,7 @@ only display the last 7 days of changes by default. This is also useful
 to set your parser explicitly using `-p/--parser` (e.g. if the default
 parser is not automatically determined correctly on your system).
 
-## INSTALLATION
+## Installation
 
 Arch Linux users can install [pkglog from the
 AUR](https://aur.archlinux.org/packages/pkglog).
@@ -163,7 +197,7 @@ required if you want to parse zypper logs:
 $ pipx inject pkglog looseversion
 ```
 
-## LICENSE
+## License
 
 Copyright (C) 2020 Mark Blakeney. This program is distributed under the
 terms of the GNU General Public License.

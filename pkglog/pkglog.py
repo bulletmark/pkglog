@@ -17,6 +17,7 @@ TIMEGAP = 2  # mins
 PATHSEP = ':'
 
 DAYS = 30
+NETDAYS = 2
 
 # Define ANSI escape sequences for colors ..
 COLOR_red = '\033[31m'
@@ -43,6 +44,8 @@ CNFFILE = Path(os.getenv('XDG_CONFIG_HOME', '~/.config'),
 class Queue:
     queue = []
     installed = {}
+    installed_previously = {}
+    installed_net_days = None
     no_color = None
     boottime = None
     bootstr = None
@@ -92,6 +95,10 @@ class Queue:
                 pkgdt = cls.installed.get(pkg)
                 if not pkgdt or dt < pkgdt:
                     continue
+                pkgdt_rm = cls.installed_previously.get(pkg)
+                if pkgdt_rm and (pkgdt - pkgdt_rm) < cls.installed_net_days:
+                    continue
+
             if actcode != 3 or args.verbose:
                 vers += ' ' + action
             out.append((dt, pkg, vers, color))
@@ -118,6 +125,7 @@ class Queue:
             cls.installed[pkg] = dt
         elif actcode == 2:
             cls.installed.pop(pkg, None)
+            cls.installed_previously[pkg] = dt
 
         cls.queue.append((dt, action, pkg, vers))
 
@@ -188,6 +196,9 @@ def main():
             help='show installed only')
     grp.add_argument('-n', '--installed-net', action='store_true',
             help='show net installed only')
+    opt.add_argument('-N', '--installed-net-days', type=float, default=NETDAYS,
+            help='days previously removed before being re-considered as '
+            f'new net installed, default={NETDAYS}. Set to 0 to disable.')
     grp = opt.add_mutually_exclusive_group()
     grp.add_argument('-d', '--days',
             help='show all packages only from given number of days ago, '
@@ -280,6 +291,7 @@ def main():
 
     if args.installed_net:
         args.installed = True
+        Queue.installed_net_days = timedelta(days=args.installed_net_days)
 
     if not args.package and not (args.installed or args.installed_only):
         Queue.delim = 80 * '-'
