@@ -20,6 +20,7 @@ DAYS = 30
 NETDAYS = 2
 
 # Define ANSI escape sequences for colors ..
+# Refer https://en.wikipedia.org/wiki/ANSI_escape_code#Colors
 COLOR_red = '\033[31m'
 COLOR_green = '\033[32m'
 COLOR_yellow = '\033[33m'
