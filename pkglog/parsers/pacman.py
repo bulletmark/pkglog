@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 'Parse Arch Linux pacman log messages'
+import sys
 from datetime import datetime
 
 logfile = '/var/log/pacman.log'
@@ -10,6 +11,10 @@ class g:
     line = None
 
 def get_time(line):
+    # Handle old format pacman logs
+    if len(line) > 11 and line[11] == ' ':
+        line = line[:11] + 'T' + line[12:]
+
     vals = line.split(maxsplit=2)
     if len(vals) != 3:
         return None
@@ -22,9 +27,14 @@ def get_time(line):
     # Pacman log sometimes has stray leading nulls
     dts = dts.lstrip().lstrip('\0').strip()
 
-    # Add missing ":" in timezone which fromisoformat() requires
+    # Add missing ":" in timezone which fromisoformat() < 3.11 requires
+    if sys.version_info < (3, 11) and ('+' in dts or '-' in dts):
+        if len(dts) < 24:
+            return None
+        dts = f'{dts[:23]}:{dts[23:]}'
+
     try:
-        dt = datetime.fromisoformat(f'{dts[1:23]}:{dts[23:-1]}')
+        dt = datetime.fromisoformat(dts[1:-1])
     except Exception:
         return None
 
