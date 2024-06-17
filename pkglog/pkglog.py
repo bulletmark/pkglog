@@ -87,11 +87,15 @@ class Queue:
                 if args.installed_only and actcode > 1:
                     continue
             if args.package:
-                if args.regex:
-                    if not args.regex.search(pkg):
-                        continue
-                elif pkg != args.package:
+                for arg_pkg in args.package:
+                    if args.regex:
+                        if arg_pkg.search(pkg):
+                            break
+                    elif pkg == arg_pkg:
+                        break
+                else:
                     continue
+
             if args.installed_net:
                 pkgdt = cls.installed.get(pkg)
                 if not pkgdt or dt < pkgdt:
@@ -228,13 +232,13 @@ def main():
             f'(separate multiple using "{PATHSEP}", must be time sequenced)')
     grp2 = opt.add_mutually_exclusive_group()
     grp2.add_argument('-g', '--glob', action='store_true',
-            help='given package name is glob pattern to match')
+            help='given package name[s] is glob pattern to match')
     grp2.add_argument('-r', '--regex', action='store_true',
-            help='given package name is regular expression to match')
+            help='given package name[s] is regular expression to match')
     opt.add_argument('-V', '--version', action='store_true',
             help=f'show {opt.prog} version')
-    opt.add_argument('package', nargs='?',
-            help='specific package name to report')
+    opt.add_argument('package', nargs='*',
+            help='specific package name[s] to report')
 
     # Merge in default options from user config file. Then parse the
     # command line.
@@ -281,14 +285,20 @@ def main():
         sys.exit('ERROR: Can not determine log parser for this system.')
 
     if args.package:
-        if args.glob:
-            args.package = fnmatch.translate(args.package)
-            args.regex = True
+        pkgs = []
+        for pkg in args.package:
+            # Convert glob pattern to regex
+            if args.glob:
+                pkg = fnmatch.translate(pkg)
+                args.regex = True
 
-        if args.regex:
-            args.regex = re.compile(args.package)
-    else:
-        args.regex = None
+            # Store compiled regex for package name
+            if args.regex:
+                pkg = re.compile(pkg)
+
+            pkgs.append(pkg)
+
+        args.package = pkgs
 
     if args.installed_net:
         args.installed = True

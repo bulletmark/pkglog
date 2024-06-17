@@ -28,8 +28,9 @@ distributions. Example output is shown below.
    changed since the last boot, e.g. if the linux kernel package has
    updated you may decide to reboot asap.
 
-5. You can specify a package name and only changes to that package are
-   shown. See the USAGE section below.
+5. You can specify one or more package names and only changes to those
+   packages are shown. You can specify glob or regular expression
+   patterns for the names. See the USAGE section below.
 
 6. You can use the `-n/--installed-net` option to see a list of all
    packages currently installed and their date of installation. E.g. use
@@ -86,12 +87,12 @@ usage: pkglog [-h] [-u | -i | -I | -n] [-N INSTALLED_NET_DAYS]
                    [-d DAYS | -a | -b] [-j] [-v] [-c]
                    [-p {pacman,zypper,apt,dnf} | -f PARSER_PLUGIN]
                    [-t TIMEGAP] [-P PATH] [-g | -r] [-V]
-                   [package]
+                   [package ...]
 
 Reports concise log of package changes.
 
 positional arguments:
-  package               specific package name to report
+  package               specific package name[s] to report
 
 options:
   -h, --help            show this help message and exit
@@ -119,8 +120,8 @@ options:
                         max minutes gap between grouped changes, default=2
   -P PATH, --path PATH  alternate log path[s] (separate multiple using ":",
                         must be time sequenced)
-  -g, --glob            given package name is glob pattern to match
-  -r, --regex           given package name is regular expression to match
+  -g, --glob            given package name[s] is glob pattern to match
+  -r, --regex           given package name[s] is regular expression to match
   -V, --version         show pkglog version
 
 Note you can set default starting options in ~/.config/pkglog-flags.conf.
@@ -209,3 +210,5 @@ This program is distributed in the hope that it will be useful, but
 WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
 Public License at <http://www.gnu.org/licenses/> for more details.
+# vim: set ai:
+```
