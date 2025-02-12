@@ -1,5 +1,6 @@
 #!/usr/bin/python3
-'Parse RedHat/Fedora DNF log messages'
+"Parse RedHat/Fedora DNF log messages"
+
 import re
 from datetime import datetime
 
@@ -14,9 +15,11 @@ ACTIONS = {
     'Reinstalled': ('reinstalled', 0),
 }
 
+
 class g:
-    vers = {}
-    pkgs = None
+    vers = {}  # type: ignore
+    pkgs = None  # type: ignore
+
 
 def get_time(line):
     fields = line.split(maxsplit=3)
@@ -49,7 +52,7 @@ def get_time(line):
     if index < 0:
         dts = dts.replace('Z', '+00:00')
     else:
-        dts = dts[:index + 3] + ':' + dts[index + 3:]
+        dts = dts[: index + 3] + ':' + dts[index + 3 :]
 
     # Return the logged time in localtime
     try:
@@ -58,6 +61,7 @@ def get_time(line):
         return None
 
     return dt
+
 
 def get_packages():
     yield g.pkgs

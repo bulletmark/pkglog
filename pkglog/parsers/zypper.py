@@ -1,5 +1,6 @@
 #!/usr/bin/python3
-'Parse OpenSUSE zypper log format'
+"Parse OpenSUSE zypper log format"
+
 import sys
 from datetime import datetime
 
@@ -7,13 +8,15 @@ from datetime import datetime
 # run this tool as normal user.
 logfile = '/var/log/zypp/history'
 
-_pkgs = {}
+_pkgs = {}  # type: ignore
+
 
 class g:
     pkg = None
     vers = None
     oldvers = None
     removed = None
+
 
 def get_time(line):
     vals = line.split('|', maxsplit=4)
@@ -43,12 +46,14 @@ def get_time(line):
 
     return dt
 
+
 def get_packages():
     try:
-        from looseversion import LooseVersion as Version
+        from looseversion import LooseVersion as Version  # type: ignore
     except Exception:
-        sys.exit('Error: Need to install Python looseversion package to use '
-        'zypper parsing.')
+        sys.exit(
+            'Error: Need to install Python looseversion package to use zypper parsing.'
+        )
 
     if g.removed:
         action = 'removed'

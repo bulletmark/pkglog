@@ -1,5 +1,6 @@
 #!/usr/bin/python3
-'Parse Debian/Ubuntu APT log messages'
+"Parse Debian/Ubuntu APT log messages"
+
 import re
 from datetime import datetime
 
@@ -13,9 +14,11 @@ ACTIONS = {
     'Reinstall': 'reinstalled',
 }
 
+
 class g:
     action = None
     line = None
+
 
 def get_time(line):
     vals = line.split(':', maxsplit=1)
@@ -39,6 +42,7 @@ def get_time(line):
         g.action = action
         g.line = rest[1:]
     return None
+
 
 def get_packages():
     if g.action:

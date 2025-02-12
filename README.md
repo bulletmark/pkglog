@@ -83,10 +83,9 @@ See the [current parsers](pkglog/parsers) for example code.
 Type `pkglog -h` to view the usage summary:
 
 ```
-usage: pkglog [-h] [-u | -i | -I | -n] [-N INSTALLED_NET_DAYS]
-                   [-d DAYS | -a | -b] [-j] [-v] [-c]
-                   [-p {pacman,zypper,apt,dnf} | -f PARSER_PLUGIN]
-                   [-t TIMEGAP] [-P PATH] [-g | -r] [-V]
+usage: pkglog [-h] [-u | -i | -I | -n] [-N INSTALLED_NET_DAYS] [-d DAYS |
+                   -a | -b] [-j] [-v] [-c] [-p {pacman,zypper,apt,dnf} |
+                   -f PARSER_PLUGIN] [-t TIMEGAP] [-P PATH] [-g | -r] [-V]
                    [package ...]
 
 Reports concise log of package changes.
@@ -100,10 +99,10 @@ options:
   -i, --installed       show installed/removed only
   -I, --installed-only  show installed only
   -n, --installed-net   show net installed only
-  -N INSTALLED_NET_DAYS, --installed-net-days INSTALLED_NET_DAYS
+  -N, --installed-net-days INSTALLED_NET_DAYS
                         days previously removed before being re-considered as
                         new net installed, default=2. Set to 0 to disable.
-  -d DAYS, --days DAYS  show all packages only from given number of days ago,
+  -d, --days DAYS       show all packages only from given number of days ago,
                         or from given YYYY-MM-DD[?HH:MM[:SS]],
                         default=30(days), 0=today, -1=all. If only time is
                         specified, then today is assumed.
@@ -112,13 +111,13 @@ options:
   -j, --nojustify       don't right justify version numbers
   -v, --verbose         be verbose, describe upgrades/downgrades
   -c, --no-color        do not color output lines
-  -p {pacman,zypper,apt,dnf}, --parser {pacman,zypper,apt,dnf}
+  -p, --parser {pacman,zypper,apt,dnf}
                         log parser type, default=pacman
-  -f PARSER_PLUGIN, --parser-plugin PARSER_PLUGIN
+  -f, --parser-plugin PARSER_PLUGIN
                         path to alternate custom parser plugin file
-  -t TIMEGAP, --timegap TIMEGAP
+  -t, --timegap TIMEGAP
                         max minutes gap between grouped changes, default=2
-  -P PATH, --path PATH  alternate log path[s] (separate multiple using ":",
+  -P, --path PATH       alternate log path[s] (separate multiple using ":",
                         must be time sequenced)
   -g, --glob            given package name[s] is glob pattern to match
   -r, --regex           given package name[s] is regular expression to match

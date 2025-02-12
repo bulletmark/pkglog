@@ -1,5 +1,6 @@
 #!/usr/bin/python3
-'Parse Arch Linux pacman log messages'
+"Parse Arch Linux pacman log messages"
+
 import sys
 from datetime import datetime
 
@@ -7,8 +8,10 @@ logfile = '/var/log/pacman.log'
 
 LINETYPES = {'[ALPM]', '[PACMAN]'}
 
+
 class g:
     line = None
+
 
 def get_time(line):
     # Handle old format pacman logs
@@ -42,6 +45,7 @@ def get_time(line):
 
     # We also convert the logged time to localtime
     return dt.astimezone().replace(tzinfo=None)
+
 
 def get_packages():
     try:

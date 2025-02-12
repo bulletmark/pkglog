@@ -35,9 +35,7 @@ exclude = ["logs"]
 [tool.setuptools_scm]
 version_scheme = "post-release"
 
-[tool.edit-lint]
-linters = [
-  "ruff check",
-]
-
+[tool.ruff.format]
+quote-style = "single"
+skip-magic-trailing-comma = true
 # vim:se sw=2:
