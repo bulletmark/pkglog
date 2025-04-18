@@ -6,6 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "pkglog"
 description = "Reports concise log of package changes"
 readme = "README.md"
+license = "GPL-3.0-or-later"
 requires-python = ">=3.7"
 keywords = ["pacman", "apt-get", "apt", "dnf"]
 classifiers = [
@@ -25,9 +26,6 @@ Homepage = "https://github.com/bulletmark/pkglog"
 
 [project.scripts]
 pkglog = "pkglog.pkglog:main"
-
-[project.license]
-text = "GPLv3"
 
 [tool.setuptools.packages.find]
 exclude = ["logs"]

@@ -9,11 +9,11 @@ check:
 		--no-tips -i $(PYFILES)
 
 upload: build
-	twine3 upload dist/*
+	uv-publish
 
 build:
 	rm -rf dist
-	python3 -m build --sdist --wheel
+	uv build
 
 doc:
 	update-readme-usage
