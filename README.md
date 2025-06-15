@@ -176,7 +176,7 @@ AUR](https://aur.archlinux.org/packages/pkglog).
 
 Python 3.7 or later is required.
 Note [pkglog is on PyPI](https://pypi.org/project/pkglog/) so just
-ensure that [`pipx`](https://pypa.github.io/pipx/) is installed then
+ensure that [`pipx`](https://pipx.pypa.io/stable/) is installed then
 type the following:
 
 ```
