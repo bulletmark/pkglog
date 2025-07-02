@@ -174,7 +174,7 @@ parser is not automatically determined correctly on your system).
 Arch Linux users can install [pkglog from the
 AUR](https://aur.archlinux.org/packages/pkglog).
 
-Python 3.7 or later is required.
+Python 3.9 or later is required.
 Note [pkglog is on PyPI](https://pypi.org/project/pkglog/) so just
 ensure that [`pipx`](https://pipx.pypa.io/stable/) is installed then
 type the following:

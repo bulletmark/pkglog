@@ -5,8 +5,8 @@ PYFILES = $(PYNAME)/*.py $(PYNAME)/*/*.py
 check:
 	ruff check $(PYFILES)
 	mypy $(PYFILES)
-	vermin -vv --exclude importlib.metadata --exclude tomllib \
-		--no-tips -i $(PYFILES)
+	pyright $(PYFILES)
+	md-link-checker
 
 upload: build
 	uv-publish

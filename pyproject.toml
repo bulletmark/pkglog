@@ -7,15 +7,12 @@ name = "pkglog"
 description = "Reports concise log of package changes"
 readme = "README.md"
 license = "GPL-3.0-or-later"
-requires-python = ">=3.7"
+requires-python = ">=3.9"
 keywords = ["pacman", "apt-get", "apt", "dnf"]
 classifiers = [
   "Programming Language :: Python :: 3",
 ]
 dynamic = ["version"]
-dependencies = [
-  "importlib-metadata; python_version < '3.8'",
-]
 
 [[project.authors]]
 name = "Mark Blakeney"

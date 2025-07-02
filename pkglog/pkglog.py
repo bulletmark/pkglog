@@ -1,14 +1,16 @@
 #!/usr/bin/python3
 "Reports concise log of package changes."
-# Author: Mark Blakeney, 2016->2021.
 
-import argparse
+# Author: Mark Blakeney, 2016->2021.
+from __future__ import annotations
+
 import fileinput
 import fnmatch
 import os
 import re
 import shlex
 import sys
+from argparse import ArgumentParser, Namespace
 from datetime import date, datetime, time, timedelta
 from importlib import util
 from pathlib import Path
@@ -46,14 +48,14 @@ class Queue:
     queue = []  # type: ignore
     installed = {}  # type: ignore
     installed_previously = {}  # type: ignore
-    installed_net_days = None
-    no_color = None
-    boottime = None
-    bootstr = None
-    delim = None
+    installed_net_days: timedelta
+    no_color: bool
+    boottime: datetime
+    bootstr: str = ''
+    delim: str = ''
 
     @classmethod
-    def print(cls, color, *msg):
+    def print(cls, color: str | None, *msg: str) -> None:
         "Output given message"
         for m in msg:
             if m:
@@ -66,7 +68,7 @@ class Queue:
                     print(m + COLOR_reset)
 
     @classmethod
-    def output(cls, args):
+    def output(cls, args: Namespace) -> None:
         "Output queued set of package transactions to screen"
         if not cls.queue:
             return
@@ -114,7 +116,7 @@ class Queue:
         for num, (dt, pkg, vers, color) in enumerate(out):
             if cls.bootstr and dt > cls.boottime:
                 cls.print(None, cls.delim, cls.bootstr, cls.delim)
-                cls.bootstr = None
+                cls.bootstr = ''
             elif num == 0:
                 cls.print(None, cls.delim)
 
@@ -123,7 +125,7 @@ class Queue:
         cls.queue.clear()
 
     @classmethod
-    def append(cls, dt, action, pkg, vers):
+    def append(cls, dt: datetime, action: str, pkg: str, vers: str) -> None:
         "Append this package + action to the internal queue"
         actcode, _ = ACTIONS[action]
         if actcode == 1:
@@ -135,19 +137,20 @@ class Queue:
         cls.queue.append((dt, action, pkg, vers))
 
 
-def import_path(path):
+def import_path(path: Path):
     "Import given module path"
     modname = path.stem.replace('-', '_')
     spec = util.spec_from_file_location(modname, path)
     module = util.module_from_spec(spec)  # type: ignore
+    sys.modules[modname] = module
     spec.loader.exec_module(module)  # type: ignore
     return module
 
 
-class Parser:
-    "Class to wrap parser files"
+class Module:
+    "Class to wrap parser module files"
 
-    def __init__(self, path):
+    def __init__(self, path: Path) -> None:
         self.module = import_path(path)
         if not hasattr(self.module, 'logfile'):
             sys.exit(f'Must define logfile attribute for {path}')
@@ -155,13 +158,12 @@ class Parser:
         self.logfile = Path(self.module.logfile)
 
 
-def compute_start_time(args):
+def compute_start_time(args: Namespace) -> datetime | None:
     "Compute start time from when to output log"
     start_time = None
     days = -1
     if not args.alldays:
-        timestr = args.days
-        if timestr:
+        if timestr := args.days:
             try:
                 days = int(timestr)
             except Exception:
@@ -183,18 +185,18 @@ def compute_start_time(args):
     return start_time
 
 
-def main():
-    def_parser = None
-    parsers = {}
+def main() -> None:
+    def_module = ''
+    modules = {}
 
-    # Load all parsers
+    # Load all parser modules
     for m in (MODDIR / 'parsers').glob('[!_]*.py'):
-        parsers[m.stem] = parser = Parser(m)
-        if not def_parser and parser.logfile.exists():
-            def_parser = m.stem
+        modules[m.stem] = mod = Module(m)
+        if not def_module and mod.logfile.exists():
+            def_module = m.stem
 
     # Process command line options
-    opt = argparse.ArgumentParser(
+    opt = ArgumentParser(
         description=__doc__,
         epilog=f'Note you can set default starting options in {CNFFILE}.',
     )
@@ -259,8 +261,8 @@ def main():
     grp1.add_argument(
         '-p',
         '--parser',
-        choices=parsers,
-        help=f'log parser type, default={def_parser or "?"}',
+        choices=modules,
+        help=f'log parser type, default={def_module or "?"}',
     )
     grp1.add_argument(
         '-f', '--parser-plugin', help='path to alternate custom parser plugin file'
@@ -301,18 +303,15 @@ def main():
     cnffile = CNFFILE.expanduser()
     if cnffile.exists():
         with cnffile.open() as fp:
-            cnflines = [re.sub(r'#.*$', '', line).strip() for line in fp]
-        cnflines = ' '.join(cnflines).strip()
+            cnflinesl = [re.sub(r'#.*$', '', line).strip() for line in fp]
+        cnflines = ' '.join(cnflinesl).strip()
     else:
         cnflines = ''
 
     args = opt.parse_args(shlex.split(cnflines) + sys.argv[1:])
 
     if args.version:
-        if sys.version_info >= (3, 8):
-            from importlib.metadata import version
-        else:
-            from importlib_metadata import version
+        from importlib.metadata import version
 
         try:
             ver = version(opt.prog)
@@ -332,12 +331,12 @@ def main():
         if not path.exists() or path.is_dir():
             sys.exit(f'ERROR: "{path}" must be an existing python file')
 
-        parser = Parser(path)
+        module: Module | None = Module(path)
     else:
         # Get parser specified on command line or default parser
-        parser = parsers.get(args.parser or def_parser)
+        module = modules.get(args.parser or def_module)
 
-    if not parser:
+    if not module:
         sys.exit('ERROR: Can not determine log parser for this system.')
 
     if args.package:
@@ -375,8 +374,10 @@ def main():
         timestr = Queue.boottime.isoformat(' ', 'seconds')
         Queue.bootstr = f'{timestr} ### LAST SYSTEM BOOT ###'
 
-    defpath = parser.logfile
-    logmod = parser.module
+    # Instantiate the log parser
+    log_parser = module.module.Parser()
+
+    defpath = module.logfile
 
     if args.path:
         pathlist = [Path(p) for p in args.path.split(PATHSEP)]
@@ -399,12 +400,10 @@ def main():
 
         for lineb in fileinput.input(filelist, openhook=fileinput.hook_compressed):
             line = lineb if isinstance(lineb, str) else lineb.decode()
-            line = line.strip()
-            if not line:
+            if not (line := line.strip()):
                 continue
 
-            dt = logmod.get_time(line)
-            if not dt:
+            if not (dt := log_parser.get_time(line)):
                 continue
 
             if dt < start_time or args.boot and dt < Queue.boottime:
@@ -415,7 +414,7 @@ def main():
 
             dt_out = dt
 
-            for fields in logmod.get_packages():
+            for fields in log_parser.get_packages():
                 if fields and len(fields) == 3 and fields[0] in ACTIONS:
                     Queue.append(dt, *fields)
 
