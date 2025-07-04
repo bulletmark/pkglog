@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-"Parse Void Linux xbps log format"
+"Parse Void Linux xbps log messages"
 
 from __future__ import annotations
 

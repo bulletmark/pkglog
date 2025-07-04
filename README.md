@@ -84,9 +84,10 @@ See the [current parsers](pkglog/parsers) for example code.
 Type `pkglog -h` to view the usage summary:
 
 ```
-usage: pkglog [-h] [-u | -i | -I | -n] [-N INSTALLED_NET_DAYS] [-d DAYS |
-                   -a | -b] [-j] [-v] [-c] [-p {pacman,zypper,apt,xbps,dnf} |
-                   -f PARSER_PLUGIN] [-t TIMEGAP] [-P PATH] [-g | -r] [-V]
+usage: pkglog [-h] [-u | -i | -I | -n] [-N INSTALLED_NET_DAYS] [-d DAYS]
+                   [-a] [-b] [-j] [-v] [-c] [-p {pacman,zypper,apt,xbps,dnf} |
+                   -f PARSER_PLUGIN] [-t TIMEGAP] [-P PATH] [-g | -r] [-l]
+                   [-V]
                    [package ...]
 
 Reports concise log of package changes.
@@ -122,7 +123,8 @@ options:
                         must be time sequenced)
   -g, --glob            given package name[s] is glob pattern to match
   -r, --regex           given package name[s] is regular expression to match
-  -V, --version         show pkglog version
+  -l, --list-parsers    just list available parsers and their descriptions
+  -V, --version         just show pkglog version
 
 Note you can set default starting options in ~/.config/pkglog-flags.conf.
 ```

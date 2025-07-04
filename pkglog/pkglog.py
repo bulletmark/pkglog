@@ -293,8 +293,14 @@ def main() -> None:
         action='store_true',
         help='given package name[s] is regular expression to match',
     )
+    grp.add_argument(
+        '-l',
+        '--list-parsers',
+        action='store_true',
+        help='just list available parsers and their descriptions',
+    )
     opt.add_argument(
-        '-V', '--version', action='store_true', help=f'show {opt.prog} version'
+        '-V', '--version', action='store_true', help=f'just show {opt.prog} version'
     )
     opt.add_argument('package', nargs='*', help='specific package name[s] to report')
 
@@ -319,6 +325,13 @@ def main() -> None:
             ver = 'unknown'
 
         print(ver)
+        return
+
+    if args.list_parsers:
+        for name in sorted(modules):
+            mod = modules[name]
+            desc = mod.module.__doc__ or 'No description available.'
+            print(f'{name}\t: {desc}')
         return
 
     Queue.no_color = args.no_color or not sys.stdout.isatty()
