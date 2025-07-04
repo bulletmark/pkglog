@@ -76,6 +76,7 @@ See the [current parsers](pkglog/parsers) for example code.
 |apt       |`/var/log/apt/history*`|Debian, Ubuntu, etc|
 |dnf       |`/var/log/dnf.rpm.log` |RedHat, Fedora, etc|
 |pacman    |`/var/log/pacman.log`  |Arch, Manjaro, etc |
+|xbps      |`/var/log/socklog/xbps/current`|Void Linux |
 |zypper    |`/var/log/zypp/history`|OpenSUSE           |
 
 ## Usage
@@ -84,7 +85,7 @@ Type `pkglog -h` to view the usage summary:
 
 ```
 usage: pkglog [-h] [-u | -i | -I | -n] [-N INSTALLED_NET_DAYS] [-d DAYS |
-                   -a | -b] [-j] [-v] [-c] [-p {pacman,zypper,apt,dnf} |
+                   -a | -b] [-j] [-v] [-c] [-p {pacman,zypper,apt,xbps,dnf} |
                    -f PARSER_PLUGIN] [-t TIMEGAP] [-P PATH] [-g | -r] [-V]
                    [package ...]
 
@@ -111,7 +112,7 @@ options:
   -j, --nojustify       don't right justify version numbers
   -v, --verbose         be verbose, describe upgrades/downgrades
   -c, --no-color        do not color output lines
-  -p, --parser {pacman,zypper,apt,dnf}
+  -p, --parser {pacman,zypper,apt,xbps,dnf}
                         log parser type, default=pacman
   -f, --parser-plugin PARSER_PLUGIN
                         path to alternate custom parser plugin file
