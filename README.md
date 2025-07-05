@@ -179,17 +179,17 @@ AUR](https://aur.archlinux.org/packages/pkglog).
 
 Python 3.9 or later is required.
 Note [pkglog is on PyPI](https://pypi.org/project/pkglog/) so just
-ensure that [`pipx`](https://pipx.pypa.io/stable/) is installed then
+ensure that [`uv`](https://docs.astral.sh/uv/) is installed then
 type the following:
 
 ```
-$ pipx install pkglog
+$ uv tool install pkglog
 ```
 
 To upgrade:
 
 ```
-$ pipx upgrade pkglog
+$ uv tool upgrade pkglog
 ```
 
 Note that python package
@@ -197,7 +197,7 @@ Note that python package
 required if you want to parse zypper logs:
 
 ```
-$ pipx inject pkglog looseversion
+$ uv tool install --with looseversion pkglog
 ```
 
 ## License
