@@ -68,12 +68,11 @@ class Parser:
         if self.removed:
             action = 'removed'
         elif self.oldvers:
-            vers = Version(self.vers)
-            oldvers = Version(self.oldvers)
-            if vers == oldvers:
+            if self.vers == self.oldvers:
                 action = 'reinstalled'
             else:
-                action = 'upgraded' if vers > oldvers else 'downgraded'
+                up = Version(self.vers) > Version(self.oldvers)
+                action = 'upgraded' if up else 'downgraded'
                 self.vers = f'{self.oldvers} -> {self.vers}'
         else:
             action = 'installed'
