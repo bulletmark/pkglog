@@ -4,6 +4,7 @@ dist/
 logs/
 .idea/
 .vscode/
+.zed/
 *.egg-info/
 *.pyc
 __pycache__/
