@@ -411,7 +411,9 @@ def main() -> None:
         if not filelist[-1].exists():
             sys.exit(f'ERROR: {filelist[-1]} does not exist.')
 
-        for lineb in fileinput.input(filelist, openhook=fileinput.hook_compressed):
+        for lineb in fileinput.input(
+            filelist, openhook=fileinput.hook_compressed, encoding='unicode_escape'
+        ):
             line = lineb if isinstance(lineb, str) else lineb.decode()
             if not (line := line.strip()):
                 continue
