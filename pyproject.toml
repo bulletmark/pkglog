@@ -7,7 +7,7 @@ name = "pkglog"
 description = "Reports concise log of package changes"
 readme = "README.md"
 license = "GPL-3.0-or-later"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 keywords = ["pacman", "apt-get", "apt", "dnf"]
 classifiers = [
   "Programming Language :: Python :: 3",
