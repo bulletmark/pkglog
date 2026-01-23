@@ -12,7 +12,7 @@ from datetime import datetime
 # run this tool as normal user.
 logfile = '/var/log/zypp/history'
 
-_pkgs = {}  # type: ignore
+_pkgs = {}
 
 
 @dataclass

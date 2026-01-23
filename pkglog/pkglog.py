@@ -43,9 +43,9 @@ MODDIR = Path(__file__).parent.resolve()
 
 
 class Queue:
-    queue = []  # type: ignore
-    installed = {}  # type: ignore
-    installed_previously = {}  # type: ignore
+    queue = []
+    installed = {}
+    installed_previously = {}
     installed_net_days: timedelta
     no_color: bool
     boottime: datetime
@@ -373,9 +373,9 @@ def main() -> None:
         Queue.bootstr = f'{timestr} ### LAST SYSTEM BOOT ###'
 
     # Instantiate the log parser
-    log_parser = module.module.Parser()
+    log_parser = module.module.Parser()  # type: ignore
 
-    defpath = module.logfile
+    defpath = module.logfile  # type: ignore
 
     if args.path:
         pathlist = [Path(p) for p in args.path.split(PATHSEP)]

@@ -4,8 +4,7 @@ PYFILES = $(PYNAME)/*.py $(PYNAME)/*/*.py
 
 check:
 	ruff check $(PYFILES)
-	mypy $(PYFILES)
-	pyright $(PYFILES)
+	ty check $(PYFILES)
 	md-link-checker
 
 upload: build
