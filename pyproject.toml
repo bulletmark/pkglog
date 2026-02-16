@@ -25,7 +25,7 @@ email = "mark.blakeney@bullet-systems.net"
 Homepage = "https://github.com/bulletmark/pkglog"
 
 [project.scripts]
-pkglog = "pkglog.pkglog:main"
+pkglog = "pkglog.main:main"
 
 [tool.setuptools.packages.find]
 exclude = ["logs"]

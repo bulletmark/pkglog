@@ -1,4 +1,4 @@
-from . import pkglog
+from . import main
 
 if __name__ == '__main__':
-    pkglog.main()
+    main.main()
