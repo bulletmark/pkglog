@@ -373,9 +373,9 @@ def main() -> None:
         Queue.bootstr = f'{timestr} ### LAST SYSTEM BOOT ###'
 
     # Instantiate the log parser
-    log_parser = module.module.Parser()  # type: ignore
+    log_parser = module.module.Parser()
 
-    defpath = module.logfile  # type: ignore
+    defpath = module.logfile
 
     if args.path:
         pathlist = [Path(p) for p in args.path.split(PATHSEP)]
