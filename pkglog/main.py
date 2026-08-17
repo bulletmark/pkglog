@@ -1,4 +1,3 @@
-#!/usr/bin/python3
 "Reports concise log of package changes."
 
 # Author: Mark Blakeney, 2016->2021.
@@ -11,6 +10,7 @@ import sys
 from datetime import date, datetime, time, timedelta
 from importlib import util
 from pathlib import Path
+from typing import ClassVar
 
 from argparse_from_file import ArgumentParser, Namespace
 
@@ -43,14 +43,14 @@ MODDIR = Path(__file__).parent.resolve()
 
 
 class Queue:
-    queue = []
-    installed = {}
-    installed_previously = {}
-    installed_net_days: timedelta
-    no_color: bool
-    boottime: datetime
-    bootstr: str = ''
-    delim: str = ''
+    queue: ClassVar = []
+    installed: ClassVar = {}
+    installed_previously: ClassVar = {}
+    installed_net_days: ClassVar[timedelta]
+    no_color: ClassVar[bool]
+    boottime: ClassVar[datetime]
+    bootstr: ClassVar[str] = ''
+    delim: ClassVar[str] = ''
 
     @classmethod
     def print(cls, color: str | None, *msg: str) -> None:
@@ -78,9 +78,8 @@ class Queue:
         # this transaction set
         for dt, action, pkg, vers in cls.queue:
             actcode, color = ACTIONS[action]
-            if args.updated_only:
-                if actcode != 3:
-                    continue
+            if args.updated_only and actcode != 3:
+                continue
             if args.installed or args.installed_only:
                 if actcode > 2:
                     continue

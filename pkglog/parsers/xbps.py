@@ -1,4 +1,3 @@
-#!/usr/bin/python3
 "Parse Void Linux xbps log messages"
 
 from __future__ import annotations
@@ -12,7 +11,7 @@ logfile = '/var/log/socklog/xbps/current'
 
 @dataclass
 class Parser:
-    pkg: tuple = tuple()
+    pkg: tuple = ()
     prev: dict[str, str] = field(default_factory=dict)
     vers: dict[str, str] = field(default_factory=dict)
 

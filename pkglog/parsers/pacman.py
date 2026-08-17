@@ -1,4 +1,3 @@
-#!/usr/bin/python3
 "Parse Arch Linux pacman log messages"
 
 from __future__ import annotations

@@ -1,4 +1,3 @@
-#!/usr/bin/python3
 "Parse Debian/Ubuntu APT log messages"
 
 from __future__ import annotations

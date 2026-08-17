@@ -1,4 +1,3 @@
-#!/usr/bin/python3
 "Parse RedHat/Fedora DNF log messages"
 
 from __future__ import annotations

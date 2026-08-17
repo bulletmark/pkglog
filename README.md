@@ -84,11 +84,10 @@ See the [current parsers](pkglog/parsers) for example code.
 Type `pkglog -h` to view the usage summary:
 
 ```
-usage: pkglog [-h] [-u | -i | -I | -n] [-N INSTALLED_NET_DAYS] [-d DAYS]
-                   [-a] [-b] [-j] [-v] [-c] [-p {pacman,zypper,apt,xbps,dnf} |
-                   -f PARSER_PLUGIN] [-t TIMEGAP] [-P PATH] [-g | -r] [-l]
-                   [-V]
-                   [package ...]
+usage: pkglog [-h] [-u | -i | -I | -n] [-N INSTALLED_NET_DAYS] [-d DAYS | -a |
+              -b | -l] [-j] [-v] [-c] [-p {pacman,zypper,apt,xbps,dnf} |
+              -f PARSER_PLUGIN] [-t TIMEGAP] [-P PATH] [-g | -r] [-V]
+              [package ...]
 
 Reports concise log of package changes.
 
@@ -126,8 +125,7 @@ options:
   -l, --list-parsers    just list available parsers and their descriptions
   -V, --version         just show pkglog version
 
-Note you can set default starting options in $HOME/.config/pkglog-
-flags.conf.
+Note you can set default starting options in ~/.config/pkglog-flags.conf.
 ```
 
 ## Installed Net Output Options

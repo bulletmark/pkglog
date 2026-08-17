@@ -1,4 +1,3 @@
-#!/usr/bin/python3
 "Parse OpenSUSE zypper log format"
 
 from __future__ import annotations
@@ -22,7 +21,6 @@ class Parser:
     oldvers: str = ''
     removed: bool = False
 
-    #
     def __init__(self):
         self.pkg = ''
         self.vers = ''
